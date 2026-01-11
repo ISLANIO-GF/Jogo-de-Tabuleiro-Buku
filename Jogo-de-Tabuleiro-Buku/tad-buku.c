@@ -3,7 +3,7 @@
 #include "tad-buku.h"
 
 #define RESET        "\x1b[0m"
-#define FUNDO_AMARELO "\x1b[43m"
+#define FUNDO_VERDE "\x1b[43m"
 #define FUNDO_PRETO  "\x1b[40m"
 #define TEXTO_PRETO  "\x1b[30m"
 #define TEXTO_BRANCO "\x1b[37m"
@@ -89,7 +89,7 @@ void imprimeTabuleiro(Tabuleiro *tab){
                 Pilha p = tab->casas[i][j];
 
                 if(p->cor == 'B')
-                    printf(FUNDO_AMARELO TEXTO_PRETO);
+                    printf(FUNDO_VERDE TEXTO_PRETO);
                 else
                     printf(FUNDO_PRETO TEXTO_BRANCO);
 

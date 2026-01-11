@@ -2,12 +2,10 @@
 #define TAD-BUKU_H_INCLUDED
 
 
-typedef struct peca *Pilha;
+typedef struct casa *Pilha;
 typedef struct tabuleiro Tabuleiro;
 
 Tabuleiro* criaTabuleiro(int tam);
-
-int vazia(Pilha *topo);
 
 int alturaPilha(Pilha topo);
 

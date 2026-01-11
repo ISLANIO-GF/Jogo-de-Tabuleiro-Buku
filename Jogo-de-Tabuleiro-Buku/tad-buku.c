@@ -3,7 +3,7 @@
 #include "tad-buku.h"
 
 #define RESET        "\x1b[0m"
-#define FUNDO_VERDE "\x1b[43m"
+#define FUNDO_AMARELO "\x1b[43m"
 #define FUNDO_PRETO  "\x1b[40m"
 #define TEXTO_PRETO  "\x1b[30m"
 #define TEXTO_BRANCO "\x1b[37m"
@@ -15,12 +15,12 @@ struct tabuleiro {
     Pilha **casas;
 };
 
-struct peca {
+struct casa {
     char cor;
-    struct peca *prox;
+    struct casa *prox;
 };
 
-typedef struct peca Peca;
+typedef struct casa Casa;
 
 
 Tabuleiro* criaTabuleiro(int tam){
@@ -34,42 +34,26 @@ Tabuleiro* criaTabuleiro(int tam){
     tab->casas = (Pilha**)malloc(tam * sizeof(Pilha*));
     for (int i = 0; i < tam; i++){
         tab->casas[i] = (Pilha*)malloc(tam * sizeof(Pilha));
-        for(int j = 0; j < tam; j++)
-            tab->casas[i][j] = NULL;
-    }
-    for (int i = 0; i < tam; i++){
         for(int j = 0; j < tam; j++){
-            Peca *topo = (Peca*)malloc(sizeof(Peca));
-            if(topo == NULL){
-                printf("Erro ao criar topo de peça.");
-                exit(1);
-            }
-            topo->prox = NULL;
+            Casa *novo = (Casa*)malloc(sizeof(Casa));
             if((i + j) % 2 == 0)
-                topo->cor = 'B';
+                novo->cor = 'B';
             else
-                topo->cor ='P';
-            tab->casas[i][j] = topo;
+                novo->cor = 'P';
+            novo->prox = NULL;
+            tab->casas[i][j] = novo;
         }
     }
     return tab;
 }
 
-int vazia(Pilha *topo){
-    if(topo == NULL)
-        return 1;
-    else if(*topo == NULL)
-        return 1;
-    else
-        return 0;
-}
 
 int alturaPilha(Pilha topo){
-    if(vazia(topo))
+    if(topo == NULL)
         return 0;
     else {
         int cont = 0;
-        Peca *aux = topo;
+        Casa *aux = topo;
         while(aux != NULL){
             cont++;
             aux = aux->prox;
@@ -88,12 +72,12 @@ void imprimeTabuleiro(Tabuleiro *tab){
             for(int j = 0; j < tab->col; j++){
                 Pilha p = tab->casas[i][j];
 
-                if(p->cor == 'B')
-                    printf(FUNDO_VERDE TEXTO_PRETO);
+                if((i+j) % 2 == 0)
+                    printf(FUNDO_AMARELO TEXTO_PRETO);
                 else
                     printf(FUNDO_PRETO TEXTO_BRANCO);
 
-                if(vazia(p))
+                if(p == NULL)
                     printf(" [  ] ");
                 else
                     printf(" [%d] ", alturaPilha(p));

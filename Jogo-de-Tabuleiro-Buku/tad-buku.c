@@ -35,13 +35,39 @@ Tabuleiro* criaTabuleiro(int tam){
     for (int i = 0; i < tam; i++){
         tab->casa[i] = (Pilha*)malloc(tam * sizeof(Pilha));
         for(int j = 0; j < tam; j++){
-            Peca *novo = (Peca*)malloc(sizeof(Peca));
-            if(novo != NULL)
-            novo->prox = NULL;
-            tab->casa[i][j] = novo;
+            tab->casa[i][j] = NULL;
         }
     }
     return tab;
+}
+
+void iniciarTabuleiro(Tabuleiro *tab){
+    for(int i = 0; i <tab->lin;i++){
+        for(int j = 0; j < tab->col;j++){
+            tab->casa[i][j] = inserirPeca(tab->casa[i][j]);
+        }
+    }
+}
+
+Pilha inserirPeca(Pilha p){
+    Peca *novo = (Peca*)malloc(sizeof(Peca));
+    if(novo == NULL){
+        printf("Erro ao inicializar tabuleiro");
+        return p;
+    }
+    novo->prox = p;
+    return novo;
+}
+
+Pilha removerPeca(Pilha p){
+    if(p == NULL)
+        return NULL;
+    else {
+        Peca *aux = p;
+        p = p->prox;
+        free(aux);
+        return p;
+    }
 }
 
 
@@ -86,7 +112,7 @@ void imprimeTabuleiro(Tabuleiro *tab){
                     printf(FUNDO_PRETO TEXTO_BRANCO);
 
                 if(p == NULL)
-                    printf("  [  ]  ");
+                    printf(" [  ]  ");
                 else
                     printf("  [%d]  ", alturaPilha(p));
             }
@@ -96,12 +122,21 @@ void imprimeTabuleiro(Tabuleiro *tab){
     }
 }
 
-Pilha* criaMaoDoJogador(){
-    Pilha *mao = (Pilha*)malloc(sizeof(Pilha));
-    if(mao != NULL)
-        *mao = NULL;
-    return mao;
+void destruirTabuleiro(Tabuleiro *tab){
+    if(tab != NULL){
+        for(int i = 0; i <tab->lin;i++){
+            for(int j = 0; j < tab->col;j++){
+                while(tab->casa[i][j] != NULL)
+                    tab->casa[i][j] = removerPeca(tab->casa[i][j]);
+            }
+            free(tab->casa[i]);
+        }
+        free(tab->casa);
+        free(tab);
+    }
 }
+
+
 
 
 //Funções auxiliares.

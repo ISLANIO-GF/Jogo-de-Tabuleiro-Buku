@@ -8,11 +8,18 @@ typedef struct tabuleiro Tabuleiro;
 
 Tabuleiro* criaTabuleiro(int tam);
 
+void iniciarTabuleiro(Tabuleiro *tab);
+
 int alturaPilha(Pilha pilha);
+
+Pilha inserirPeca(Pilha p);
+
+Pilha removerPeca(Pilha p);
 
 void imprimeTabuleiro(Tabuleiro *tab);
 
-Pilha* criaMaoDoJogador();
+void destruirTabuleiro(Tabuleiro *tab);
+
 
 
 

@@ -5,13 +5,22 @@
 typedef struct peca *Pilha;
 typedef struct tabuleiro Tabuleiro;
 
+
 Tabuleiro* criaTabuleiro(int tam);
 
-int vazia(Pilha *topo);
-
-int alturaPilha(Pilha topo);
+int alturaPilha(Pilha pilha);
 
 void imprimeTabuleiro(Tabuleiro *tab);
+
+Pilha* criaMaoDoJogador();
+
+
+
+//Funções auxiliares.
+
+void menu();
+
+void limpaTela();
 
 
 #endif // TAD-BUKU_H_INCLUDED

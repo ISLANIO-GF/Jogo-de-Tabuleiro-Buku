@@ -22,7 +22,7 @@ struct peca {
 
 typedef struct peca Peca;
 
-
+//Função que cria o tabuleiro.
 Tabuleiro* criaTabuleiro(int tam){
     Tabuleiro* tab = (Tabuleiro*)malloc(sizeof(Tabuleiro));
     if (tab == NULL){
@@ -41,6 +41,7 @@ Tabuleiro* criaTabuleiro(int tam){
     return tab;
 }
 
+//Função para iniciar o tabuleiro com uma peça em cada casa.
 void iniciarTabuleiro(Tabuleiro *tab){
     for(int i = 0; i <tab->lin;i++){
         for(int j = 0; j < tab->col;j++){
@@ -49,6 +50,7 @@ void iniciarTabuleiro(Tabuleiro *tab){
     }
 }
 
+//Função para inserir peças.
 Pilha inserirPeca(Pilha p){
     Peca *novo = (Peca*)malloc(sizeof(Peca));
     if(novo == NULL){
@@ -59,6 +61,7 @@ Pilha inserirPeca(Pilha p){
     return novo;
 }
 
+//Função para remover peças.
 Pilha removerPeca(Pilha p){
     if(p == NULL)
         return NULL;
@@ -70,7 +73,7 @@ Pilha removerPeca(Pilha p){
     }
 }
 
-
+//Função que determina a altura de uma pelha (número de peças).
 int alturaPilha(Pilha pilha){
     if(pilha == NULL)
         return 0;
@@ -85,6 +88,7 @@ int alturaPilha(Pilha pilha){
     }
 }
 
+//Função que imprime o tabuleiro.
 void imprimeTabuleiro(Tabuleiro *tab){
     if(tab == NULL){
         printf("Tabuleiro não foi criado!");
@@ -122,6 +126,7 @@ void imprimeTabuleiro(Tabuleiro *tab){
     }
 }
 
+//Função para destruir o tabuleiro.
 void destruirTabuleiro(Tabuleiro *tab){
     if(tab != NULL){
         for(int i = 0; i <tab->lin;i++){
@@ -136,17 +141,27 @@ void destruirTabuleiro(Tabuleiro *tab){
     }
 }
 
-
-
+//Função que cria uma pilha (pode ser usada para criar a mão dos jogadores e a pilha de pontuação.
+Pilha* criarPilha(){
+    Pilha* novo = (Pilha*)malloc(sizeof(Pilha));
+    if (novo == NULL){
+        printf("Erro ao criar pilha.");
+        exit(1);
+    }
+    *novo = NULL;
+    return novo;
+}
 
 //Funções auxiliares.
 
+//Função que exibe o menu do jogo.
 void menu(){
     printf("\n");
     printf("========= JOGO DE TABULEIRO BUKU =========");
     printf("\n");
 }
 
+//Função que limpa a tela durante em certas ocasiões do jogo.
 void limpaTela(){
     printf("\033[2J\033[H");
 }

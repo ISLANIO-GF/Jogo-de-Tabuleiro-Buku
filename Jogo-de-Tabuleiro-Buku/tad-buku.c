@@ -10,11 +10,6 @@
 #define RESET        "\x1b[0m"
 
 
-struct tabuleiro {
-    int lin;
-    int col;
-    Pilha **casa;
-};
 
 struct peca {
     struct peca *prox;
@@ -22,24 +17,6 @@ struct peca {
 
 typedef struct peca Peca;
 
-
-Tabuleiro* criaTabuleiro(int tam){
-    Tabuleiro* tab = (Tabuleiro*)malloc(sizeof(Tabuleiro));
-    if (tab == NULL){
-        printf("Erro ao criar o tabuleiro!");
-        exit(1);
-    }
-    tab->lin = tam;
-    tab->col = tam;
-    tab->casa = (Pilha**)malloc(tam * sizeof(Pilha*));
-    for (int i = 0; i < tam; i++){
-        tab->casa[i] = (Pilha*)malloc(tam * sizeof(Pilha));
-        for(int j = 0; j < tam; j++){
-            tab->casa[i][j] = NULL;
-        }
-    }
-    return tab;
-}
 
 void iniciarTabuleiro(Tabuleiro *tab){
     for(int i = 0; i <tab->lin;i++){
@@ -52,7 +29,7 @@ void iniciarTabuleiro(Tabuleiro *tab){
 Pilha inserirPeca(Pilha p){
     Peca *novo = (Peca*)malloc(sizeof(Peca));
     if(novo == NULL){
-        printf("Erro ao inicializar tabuleiro");
+        printf("Erro ao criar Peça");
         return p;
     }
     novo->prox = p;
@@ -87,7 +64,7 @@ int alturaPilha(Pilha pilha){
 
 void imprimeTabuleiro(Tabuleiro *tab){
     if(tab == NULL){
-        printf("Tabuleiro não foi criado!");
+        printf("Tabuleiro não existe!");
     } else {
         printf("\n");
         for(int i = 0; i < tab->lin; i++){

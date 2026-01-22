@@ -4,6 +4,33 @@
 #include <locale.h>
 
 
+
+typedef struct tabuleiro Tabuleiro;
+
+
+//Função para criar o tabuleiro.
+
+Tabuleiro* criaTabuleiro(int tam){
+    Tabuleiro* tab = (Tabuleiro*)malloc(sizeof(Tabuleiro));
+    if (tab == NULL){
+        printf("Erro ao criar o tabuleiro!");
+        exit(1);
+    }
+    tab->lin = tam;
+    tab->col = tam;
+    tab->casa = (Pilha**)malloc(tam * sizeof(Pilha*));
+    for (int i = 0; i < tam; i++){
+        tab->casa[i] = (Pilha*)malloc(tam * sizeof(Pilha));
+        for(int j = 0; j < tam; j++){
+            tab->casa[i][j] = NULL;
+        }
+    }
+    return tab;
+}
+
+
+
+
 int main()
 {
     setlocale(LC_ALL, "Portuguese");
@@ -12,6 +39,7 @@ int main()
     int tam_tab = 0;
     Tabuleiro *tab = NULL;
 
+    //Inicio do programa.
     menu();
     printf("\n");
     do{
@@ -22,10 +50,11 @@ int main()
             iniciarTabuleiro(tab);
         }
         else{
-            printf("\nO tamanho do tabuleiro deve ser maior que 5 e par.\n");
-            printf("Tente novamente!");
             limpaTela();
             menu();
+            printf("\n");
+            printf("\nO tamanho do tabuleiro deve ser maior que 5 e par.\n");
+            printf("Tente novamente!");
             printf("\n\n");
         }
     }while(tam_tab % 2 != 0 || tam_tab < 5);

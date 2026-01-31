@@ -36,5 +36,9 @@ void menu();
 //Função que limpa a tela durante em certas ocasiões do jogo.
 void limpaTela();
 
+//Função pausa.
+void pausa();
+
+
 
 #endif // TAD-BUKU_H_INCLUDED

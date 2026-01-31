@@ -156,12 +156,20 @@ Pilha* criarPilha(){
 
 //Função que exibe o menu do jogo.
 void menu(){
-    printf("\n");
-    printf("========= JOGO DE TABULEIRO BUKU =========");
-    printf("\n");
+    printf("\n========= JOGO DE TABULEIRO BUKU =========\n");
+    printf("\nBem vido ao jogo de Tabuleiro Buku.\nPrepare-se para uma avalanche de diversão!\n");
 }
 
 //Função que limpa a tela durante em certas ocasiões do jogo.
 void limpaTela(){
     printf("\033[2J\033[H");
+}
+
+void pausa(){
+    printf("\nPrecione enter para continuar...");
+    while(getchar() != '\n');
+    char prox;
+    do{
+       prox = getchar();
+    }while(prox != '\n');
 }

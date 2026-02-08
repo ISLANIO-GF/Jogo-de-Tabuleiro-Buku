@@ -61,11 +61,20 @@ int main()
     printf("\n===== Iniciando o Jogo. Boa sorte ao jogadores! =====\n");
     do{
         if(jogada % 2 != 0){
+            limpaTela();
+            imprimeTabuleiro(tab);
             printf("\n%s escolha uma linha: ", jogador_01);
             scanf("%d", &lin_jog);
+            if(jogadaLinha(tab, lin_jog - 1))
+                printf("\nJogada incorreta. Jogador perdeu a vez!\n");
+            limpaTela();
+            imprimeTabuleiro(tab);
+            scanf("%d");
             jogada++;
         }
         else {
+            limpaTela();
+            imprimeTabuleiro(tab);
             printf("\n%s escolha uma coluna: ", jogador_02);
             scanf("%d", &col_jog);
             jogada++;

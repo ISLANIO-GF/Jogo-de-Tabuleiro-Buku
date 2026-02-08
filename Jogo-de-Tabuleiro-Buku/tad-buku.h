@@ -29,6 +29,9 @@ void destruirTabuleiro(Tabuleiro *tab);
 //Função que cria uma pilha (pode ser usada para criar a mão dos jogadores e a pilha de pontuação.
 Pilha* criarPilha();
 
+//Função responsável por realizar a jogada do jogador 01.
+int jogadaLinha(Tabuleiro *tab, int linha);
+
 
 //Função que exibe o menu do jogo.
 void menu();

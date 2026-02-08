@@ -4,7 +4,7 @@
 
 
 #define FUNDO_XADREZ "\x1b[48;2;240;217;181m"
-#define FUNDO_PRETO  "\x1b[40m"
+#define FUNDO_MARROM  "\x1b[48;2;101;67;33m"
 #define TEXTO_PRETO  "\x1b[30m"
 #define TEXTO_BRANCO "\x1b[37m"
 #define RESET        "\x1b[0m"
@@ -90,39 +90,58 @@ int alturaPilha(Pilha pilha){
 
 //Função que imprime o tabuleiro.
 void imprimeTabuleiro(Tabuleiro *tab){
-    if(tab == NULL){
+    if(tab == NULL)
         printf("Tabuleiro não foi criado!");
-    } else {
-        printf("\n");
-        for(int i = 0; i < tab->lin; i++){
-            printf("\n");
-            for(int j = 0; j < tab->col; j++){
-                Pilha p = tab->casa[i][j];
+    else {
+        printf("\n\t");
+        for(int k = 0; k < tab->col; k++){
+            printf(" C%02d   ", k + 1);
+        }
+        printf("\n\n");
 
-                if(i == 0 && j == 0){
-                    printf("\t ");
-                    for(int k = 0; k < tab->col; k++)
-                        printf("  C%02d  ", k + 1);
-                    printf("\n\n");
-                }
-                if(j == 0){
-                    printf(RESET);
-                    printf(" L%02d  -  ", i + 1);
-                }
+        for(int i = 0; i < tab->lin; i++){
+
+            printf("       ");
+            for(int j = 0; j < tab->col; j++){
+                if((i+j) % 2 == 0)
+                    printf(FUNDO_XADREZ);
+                else
+                    printf(FUNDO_MARROM);
+                printf("       ");
+            }
+            printf(RESET);
+            printf("\n");
+
+            printf(" L%02d - ", i + 1);
+            for(int j = 0; j < tab->col; j++){
+
+                Pilha p = tab->casa[i][j];
 
                 if((i+j) % 2 == 0)
                     printf(FUNDO_XADREZ TEXTO_PRETO);
                 else
-                    printf(FUNDO_PRETO TEXTO_BRANCO);
+                    printf(FUNDO_MARROM TEXTO_BRANCO);
 
                 if(p == NULL)
-                    printf(" [  ]  ");
+                    printf(" [   ] ");
                 else
                     printf("  [%d]  ", alturaPilha(p));
+
+                printf(RESET);
             }
             printf("\n");
+            printf("       ");
+            for(int j = 0; j < tab->col; j++){
+                if((i+j) % 2 == 0)
+                    printf(FUNDO_XADREZ);
+                else
+                    printf(FUNDO_MARROM);
+                printf("       ");
+            }
+            printf(RESET);
+            printf("\n");
+
         }
-        printf(RESET);
     }
 }
 
@@ -152,12 +171,24 @@ Pilha* criarPilha(){
     return novo;
 }
 
+//Função responsável por realizar a jogada do jogador 01.
+int jogadaLinha(Tabuleiro *tab, int linha){
+    if(linha < 0 || linha >= tab->lin){
+        return 0;
+    } else {
+        for(int c = 0; c < tab->col; c++){
+            tab->casa[linha][c] = removerPeca(tab->casa[linha][c]);
+        }
+    }
+    return 1;
+}
+
 //Funções auxiliares.
 
 //Função que exibe o menu do jogo.
 void menu(){
     printf("\n========= JOGO DE TABULEIRO BUKU =========\n");
-    printf("\nBem vido ao jogo de Tabuleiro Buku.\nPrepare-se para uma avalanche de diversão!\n");
+    printf("\nBem vido ao jogo de Tabuleiro Buku.\n");
 }
 
 //Função que limpa a tela durante em certas ocasiões do jogo.
@@ -166,7 +197,7 @@ void limpaTela(){
 }
 
 void pausa(){
-    printf("\nPrecione enter para continuar...");
+    printf("\n\nPrecione enter para continuar...");
     while(getchar() != '\n');
     char prox;
     do{

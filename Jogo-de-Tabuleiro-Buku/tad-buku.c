@@ -177,7 +177,8 @@ int jogadaLinha(Tabuleiro *tab, int linha){
         return 0;
     } else {
         for(int c = 0; c < tab->col; c++){
-            tab->casa[linha][c] = removerPeca(tab->casa[linha][c]);
+            while(alturaPilha(tab->casa[linha][c]) != NULL)
+                tab->casa[linha][c] = removerPeca(tab->casa[linha][c]);
         }
     }
     return 1;

@@ -54,7 +54,7 @@ void iniciarTabuleiro(Tabuleiro *tab){
 Pilha inserirPeca(Pilha p){
     Peca *novo = (Peca*)malloc(sizeof(Peca));
     if(novo == NULL){
-        printf("Erro ao inicializar tabuleiro");
+        printf("Erro ao inserir pecas");
         return p;
     }
     novo->prox = p;
@@ -160,28 +160,22 @@ void destruirTabuleiro(Tabuleiro *tab){
     }
 }
 
-//Função que cria uma pilha (pode ser usada para criar a mão dos jogadores e a pilha de pontuação.
-Pilha* criarPilha(){
-    Pilha* novo = (Pilha*)malloc(sizeof(Pilha));
-    if (novo == NULL){
-        printf("Erro ao criar pilha.");
-        exit(1);
-    }
-    *novo = NULL;
-    return novo;
-}
 
 //Função responsável por realizar a jogada do jogador 01.
-int jogadaLinha(Tabuleiro *tab, int linha){
+Pilha* coletarPecas(Tabuleiro *tab, int linha, Pilha *mao){
     if(linha < 0 || linha >= tab->lin){
-        return 0;
+        printf("\nJogada incorreta. Jogador perdeu a vez!\n");
+        pausa();
+        return NULL;
     } else {
         for(int c = 0; c < tab->col; c++){
-            while(alturaPilha(tab->casa[linha][c]) != NULL)
+            while(alturaPilha(tab->casa[linha][c]) != NULL){
                 tab->casa[linha][c] = removerPeca(tab->casa[linha][c]);
+                mao = inserirPeca(mao);
+            }
         }
     }
-    return 1;
+    return mao;
 }
 
 //Funções auxiliares.

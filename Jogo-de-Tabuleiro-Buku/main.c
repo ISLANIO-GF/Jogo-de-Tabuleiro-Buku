@@ -39,11 +39,6 @@ int main()
 
     }while(tam_tab % 2 != 0 || tam_tab < 5);
 
-    //Criando pilhas para mão dos jogadores e as pilhas de pontuação.
-    mao = criarPilha();
-    pontuacao_jog_01 = criarPilha();
-    pontuacao_jog_02 = criarPilha();
-
 
     //Iniciando o jogo.
 
@@ -65,11 +60,12 @@ int main()
             imprimeTabuleiro(tab);
             printf("\n%s escolha uma linha: ", jogador_01);
             scanf("%d", &lin_jog);
-            if(jogadaLinha(tab, lin_jog - 1))
-                printf("\nJogada incorreta. Jogador perdeu a vez!\n");
+
+            mao = coletarPecas(tab, lin_jog - 1, mao);
+            printf("Altura da pilha mão: %d", alturaPilha(mao));
+
             limpaTela();
             imprimeTabuleiro(tab);
-            scanf("%d");
             jogada++;
         }
         else {

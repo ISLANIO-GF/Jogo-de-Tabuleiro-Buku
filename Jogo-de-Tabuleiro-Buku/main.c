@@ -1,18 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "tad-buku.h"
+#include <string.h>
 #include <locale.h>
 
+#include "tad-buku.h"
 
-int main()
-{
+
+
+int main(){
+
     setlocale(LC_ALL, "Portuguese");
 
     //variáveis:
     char jogador_01[50], jogador_02[50];
     int tam_tab = 0, jogada = 1, lin_jog = 0, col_jog = 0;
     Tabuleiro *tab = NULL;
-    Pilha *mao = NULL, *pontuacao_jog_01 = NULL, pontuacao_jog_02 = NULL;
+    Pilha *mao = NULL, *pontuacao_jog_01 = NULL, *pontuacao_jog_02 = NULL;
 
     //Criando o jogo.
     menu();
@@ -45,33 +48,35 @@ int main()
     limpaTela();
     printf("\nPara comerçamos precisamos do nome dos jogadores.\n");
 
-    printf("\nNome do Jogador 01: ");
+    //Informações dos jogadores.
+    printf("\nNome do Jogador Branco: ");
+
     fgets(jogador_01, 50, stdin);
     jogador_01[strcspn(jogador_01, "\n")] = '\0';
 
-    printf("\nNome do Jogador 02: ");
+    printf("\nNome do Jogador Preto: ");
     fgets(jogador_02, 50, stdin);
     jogador_02[strcspn(jogador_02, "\n")] = '\0';
 
+    //Começando a partida.
     printf("\n===== Iniciando o Jogo. Boa sorte ao jogadores! =====\n");
     do{
         if(jogada % 2 != 0){
-            limpaTela();
             imprimeTabuleiro(tab);
-            printf("\n%s escolha uma linha: ", jogador_01);
+            printf("\nJogador (Branco) %s escolha uma linha: ", jogador_01);
             scanf("%d", &lin_jog);
 
             mao = coletarPecas(tab, lin_jog - 1, mao);
-            printf("Altura da pilha mão: %d", alturaPilha(mao));
-
             limpaTela();
             imprimeTabuleiro(tab);
+            fazerJogada(tab, mao);
+            mao = NULL;
             jogada++;
         }
         else {
             limpaTela();
             imprimeTabuleiro(tab);
-            printf("\n%s escolha uma coluna: ", jogador_02);
+            printf("\nJogador (Preto) %s escolha uma coluna: ", jogador_02);
             scanf("%d", &col_jog);
             jogada++;
         }

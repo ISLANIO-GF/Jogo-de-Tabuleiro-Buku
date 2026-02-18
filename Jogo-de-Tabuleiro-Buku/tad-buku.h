@@ -1,5 +1,5 @@
-#ifndef TAD-BUKU_H_INCLUDED
-#define TAD-BUKU_H_INCLUDED
+#ifndef TAD_BUKU_H_INCLUDED
+#define TAD_BUKU_H_INCLUDED
 
 
 typedef struct peca *Pilha;
@@ -26,12 +26,11 @@ void imprimeTabuleiro(Tabuleiro *tab);
 //Função para destruir o tabuleiro.
 void destruirTabuleiro(Tabuleiro *tab);
 
-//Função que cria uma pilha (pode ser usada para criar a mão dos jogadores e a pilha de pontuação.
-Pilha* criarPilha();
+//Função responsável por coletar as peças no tabuleiro.
+Pilha* coletarPecas(Tabuleiro *tab, int linha, Pilha *mao);
 
-//Função responsável por realizar a jogada do jogador 01.
-int jogadaLinha(Tabuleiro *tab, int linha);
-
+//Função para realizar a jogada.
+void fazerJogada(Tabuleiro *tab, Pilha *mao);
 
 //Função que exibe o menu do jogo.
 void menu();
@@ -44,4 +43,4 @@ void pausa();
 
 
 
-#endif // TAD-BUKU_H_INCLUDED
+#endif // TAD_BUKU_H_INCLUDED

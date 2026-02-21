@@ -42,6 +42,14 @@ int main(){
 
     }while(tam_tab % 2 != 0 || tam_tab < 5);
 
+    //criando pilha para mão do jogador e pontuação.
+    mao = criaPilha();
+
+    /*
+    No momento que se cria a pilha a mesma já inicia com um elemento.
+    Para resolver esse problema chama a função removerPeca uma vez antes de iniciar o jogo.
+    */
+    mao = removerPeca(mao); //O objetivo aqui é deixar a mão sem nenhuma peça.
 
     //Iniciando o jogo.
 

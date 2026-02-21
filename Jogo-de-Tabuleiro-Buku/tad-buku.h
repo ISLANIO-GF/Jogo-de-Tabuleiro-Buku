@@ -26,6 +26,9 @@ void imprimeTabuleiro(Tabuleiro *tab);
 //Função para destruir o tabuleiro.
 void destruirTabuleiro(Tabuleiro *tab);
 
+//Função para criar pilha da mão e de potuação dos jogadores.
+Pilha* criaPilha();
+
 //Função responsável por coletar as peças no tabuleiro.
 Pilha* coletarPecas(Tabuleiro *tab, int linha, Pilha *mao);
 

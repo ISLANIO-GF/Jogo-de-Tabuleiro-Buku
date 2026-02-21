@@ -88,6 +88,15 @@ int alturaPilha(Pilha pilha){
     }
 }
 
+//Função para criar pilha da mão e de potuação dos jogadores.
+Pilha* criaPilha(){
+    Pilha *p = (Pilha*)malloc(sizeof(Pilha));
+    if(p != NULL)
+        *p = NULL;
+    return p;
+}
+
+
 //Função que imprime o tabuleiro.
 void imprimeTabuleiro(Tabuleiro *tab){
     if(tab == NULL)

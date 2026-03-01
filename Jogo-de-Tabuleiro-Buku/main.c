@@ -80,7 +80,7 @@ int main(){
             printf("\nJogador (Branco) %s escolha uma linha: ", jogador_01);
             scanf("%d", &lin_jog);
 
-            mao = coletarPecas(tab, lin_jog - 1, mao);
+            coletarPecas(tab, lin_jog - 1, &mao);
             limpaTela();
             imprimeTabuleiro(tab);
 

@@ -176,8 +176,8 @@ void destruirTabuleiro(Tabuleiro *tab){
 }
 
 
-//Função responsável por realizar a jogada do jogador 01.
-Pilha coletarPecas(Tabuleiro *tab, int linha, Pilha mao){
+//Função responsável por coletar as peças do jogador 01.
+void coletarPecas(Tabuleiro *tab, int linha, Pilha *mao){
     if(linha < 0 || linha >= tab->lin){
         printf("\nJogada incorreta. Jogador perdeu a vez!\n");
         pausa();
@@ -186,11 +186,10 @@ Pilha coletarPecas(Tabuleiro *tab, int linha, Pilha mao){
         for(int c = 0; c < tab->col; c++){
             while(alturaPilha(tab->casa[linha][c]) > 0){
                 tab->casa[linha][c] = removerPeca(tab->casa[linha][c]);
-                mao = inserirPeca(mao);
+                *mao = inserirPeca(*mao);
             }
         }
     }
-    return mao;
 }
 
 void fazerJogada(Tabuleiro *tab, Pilha *mao){

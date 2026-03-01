@@ -30,7 +30,7 @@ void destruirTabuleiro(Tabuleiro *tab);
 Pilha* criaPilha();
 
 //Função responsável por coletar as peças no tabuleiro.
-Pilha* coletarPecas(Tabuleiro *tab, int linha, Pilha *mao);
+Pilha coletarPecas(Tabuleiro *tab, int linha, Pilha mao);
 
 //Função para realizar a jogada.
 void fazerJogada(Tabuleiro *tab, Pilha *mao);

@@ -177,7 +177,7 @@ void destruirTabuleiro(Tabuleiro *tab){
 
 
 //Função responsável por realizar a jogada do jogador 01.
-Pilha* coletarPecas(Tabuleiro *tab, int linha, Pilha *mao){
+Pilha coletarPecas(Tabuleiro *tab, int linha, Pilha mao){
     if(linha < 0 || linha >= tab->lin){
         printf("\nJogada incorreta. Jogador perdeu a vez!\n");
         pausa();
@@ -194,15 +194,17 @@ Pilha* coletarPecas(Tabuleiro *tab, int linha, Pilha *mao){
 }
 
 void fazerJogada(Tabuleiro *tab, Pilha *mao){
-    if(mao == NULL)
+    if(*mao == NULL){
         printf("\nNão existe peças na mão do jogador!.\n");
-
+    }
     else{
         int l = 0, c = 0, lin_ant = -1, col_ant = -1, jogada = 0;
-        int hist_linha[tab->lin], hist_col[tab->col];
+        int max = alturaPilha(*mao);
+        int hist_linha[max], hist_col[max];
 
-        while(mao != NULL){
-            printf("\nSua mão tem %d peças.\n", alturaPilha(mao));
+        while(*mao != NULL){
+            printf("\nSua mão tem %d peças.\n", alturaPilha(*mao));
+
             printf("Escolha uma posição para colocar uma peça de 1 a %d:\n", tab->col);
             printf("Linha: ");
             scanf("%d", &l);
@@ -234,7 +236,7 @@ void fazerJogada(Tabuleiro *tab, Pilha *mao){
             }
 
             tab->casa[l-1][c-1] = inserirPeca(tab->casa[l-1][c-1]);
-            mao = removerPeca(mao);
+            *mao = removerPeca(*mao);
 
             lin_ant = l;
             col_ant = c;

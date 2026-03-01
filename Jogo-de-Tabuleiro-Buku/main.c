@@ -15,7 +15,7 @@ int main(){
     char jogador_01[50], jogador_02[50];
     int tam_tab = 0, jogada = 1, lin_jog = 0, col_jog = 0;
     Tabuleiro *tab = NULL;
-    Pilha *mao = NULL, *pontuacao_jog_01 = NULL, *pontuacao_jog_02 = NULL;
+    Pilha *mao = NULL, *pontuacao_jog_branco = NULL, *pontuacao_jog_preto = NULL;
 
     //Criando o jogo.
     menu();
@@ -44,12 +44,18 @@ int main(){
 
     //criando pilha para mão do jogador e pontuação.
     mao = criaPilha();
+    pontuacao_jog_branco = criaPilha();
+    pontuacao_jog_preto = criaPilha();
+
 
     /*
     No momento que se cria a pilha a mesma já inicia com um elemento.
     Para resolver esse problema chama a função removerPeca uma vez antes de iniciar o jogo.
     */
     mao = removerPeca(mao); //O objetivo aqui é deixar a mão sem nenhuma peça.
+    pontuacao_jog_branco = removerPeca(pontuacao_jog_branco); //O objetivo aqui é deixar a pontuação do jogador branco zerada.
+    pontuacao_jog_preto = removerPeca(pontuacao_jog_preto); //O objetivo aqui é deixar a pontuação do jogador branco zerada.
+
 
     //Iniciando o jogo.
 
@@ -58,7 +64,7 @@ int main(){
 
     //Informações dos jogadores.
     printf("\nNome do Jogador Branco: ");
-
+    getchar();
     fgets(jogador_01, 50, stdin);
     jogador_01[strcspn(jogador_01, "\n")] = '\0';
 
@@ -77,8 +83,10 @@ int main(){
             mao = coletarPecas(tab, lin_jog - 1, mao);
             limpaTela();
             imprimeTabuleiro(tab);
-            fazerJogada(tab, mao);
-            mao = NULL;
+
+            printf("Mao antes = %d\n", alturaPilha(mao));
+            fazerJogada(tab, &mao);
+            printf("\nSua mão tem %d peças.\n", alturaPilha(mao));
             jogada++;
         }
         else {

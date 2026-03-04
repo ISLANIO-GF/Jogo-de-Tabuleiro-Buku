@@ -3,11 +3,12 @@
 #include "tad-buku.h"
 
 
-#define FUNDO_XADREZ "\x1b[48;2;240;217;181m"
-#define FUNDO_MARROM  "\x1b[48;2;101;67;33m"
-#define TEXTO_PRETO  "\x1b[30m"
-#define TEXTO_BRANCO "\x1b[37m"
-#define RESET        "\x1b[0m"
+#define FUNDO_XADREZ    "\x1b[48;2;240;217;181m"
+#define FUNDO_MARROM    "\x1b[48;2;101;67;33m"
+#define TEXTO_PRETO     "\x1b[30m"
+#define TEXTO_BRANCO    "\x1b[37m"
+#define TEXTO_VERMELHO  "\x1b[31m"
+#define RESET           "\x1b[0m"
 
 
 struct tabuleiro {
@@ -138,8 +139,10 @@ void imprimeTabuleiro(Tabuleiro *tab){
                         printf("   @   ");
                     else if(altura == 2)
                         printf("   @@  ");
-                    else
+                    else{
+                        printf(TEXTO_VERMELHO);
                         printf("  @@@  ");
+                    }
                 }
 
                 printf(RESET);
@@ -246,6 +249,24 @@ void fazerJogada(Tabuleiro *tab, Pilha *mao){
 
             limpaTela();
             imprimeTabuleiro(tab);
+        }
+    }
+}
+
+
+//Função que verifica se houve pontuação dos jogadores.
+void verificaPontuacao(Tabuleiro *tab, Pilha *pontuacao){
+    int alt = 0;
+    for(int l = 0; l < tab->lin; l++){
+        for(int c = 0; c < tab->col; c++){
+            alt = alturaPilha(tab->casa[l][c]);
+            if(alt >= 3){
+                while(alt > 0){
+                    tab->casa[l][c] = removerPeca(tab->casa[l][c]);
+                    *pontuacao = inserirPeca(*pontuacao);
+                    alt--;
+                }
+            }
         }
     }
 }

@@ -35,6 +35,9 @@ void coletarPecas(Tabuleiro *tab, int linha, Pilha *mao);
 //Função para realizar a jogada.
 void fazerJogada(Tabuleiro *tab, Pilha *mao);
 
+//Função que verifica se houve pontuaçao dos jogadores.
+void verificaPontuacao(Tabuleiro *tab, Pilha *pontuacao);
+
 //Função que exibe o menu do jogo.
 void menu();
 

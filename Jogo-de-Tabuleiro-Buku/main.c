@@ -84,10 +84,12 @@ int main(){
             limpaTela();
             imprimeTabuleiro(tab);
 
-            printf("Mao antes = %d\n", alturaPilha(mao));
+
             fazerJogada(tab, &mao);
-            printf("\nSua mão tem %d peças.\n", alturaPilha(mao));
+            pausa();
+            verificaPontuacao(tab, &pontuacao_jog_branco);
             jogada++;
+
         }
         else {
             limpaTela();

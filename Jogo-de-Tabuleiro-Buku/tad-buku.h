@@ -35,6 +35,18 @@ void coletarPecas(Tabuleiro *tab, int linha, Pilha *mao);
 //Função para realizar a jogada.
 void fazerJogada(Tabuleiro *tab, Pilha *mao);
 
+//Função que verifica as condições de parada do jogo.
+//Primeira condição: Linha escolhida está vazia.
+int condicaoParadaLinhaVazia(Tabuleiro *tab, int escolha);
+
+//Segunda condição: Coluna escolhida está vazia.
+int condicaoParadaColunaVazia(Tabuleiro *tab, int escolha);
+
+//Terceira condição: Só existe uma peça em cada casa do tabuleiro.
+int condicaoParadaUnicaPeca(Tabuleiro *tab);
+
+//.
+
 //Função que verifica se houve pontuaçao dos jogadores.
 void verificaPontuacao(Tabuleiro *tab, Pilha *pontuacao);
 

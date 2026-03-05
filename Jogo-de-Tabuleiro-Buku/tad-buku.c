@@ -184,7 +184,7 @@ void coletarPecas(Tabuleiro *tab, int linha, Pilha *mao){
     if(linha < 0 || linha >= tab->lin){
         printf("\nJogada incorreta. Jogador perdeu a vez!\n");
         pausa();
-        return NULL;
+        return;
     } else {
         for(int c = 0; c < tab->col; c++){
             while(alturaPilha(tab->casa[linha][c]) > 0){
@@ -197,7 +197,7 @@ void coletarPecas(Tabuleiro *tab, int linha, Pilha *mao){
 
 void fazerJogada(Tabuleiro *tab, Pilha *mao){
     if(*mao == NULL){
-        printf("\nNão existe peças na mão do jogador!.\n");
+        return;
     }
     else{
         int l = 0, c = 0, lin_ant = -1, col_ant = -1, jogada = 0;
@@ -213,11 +213,13 @@ void fazerJogada(Tabuleiro *tab, Pilha *mao){
             printf("Coluna: ");
             scanf("%d", &c);
 
+            //Verifica se a posição escolhida está dentro do tabuleiro.
             if(l <= 0 || l > tab->lin || c <= 0 || c > tab->col){
                 printf("\nPosição inválida! Tente novamente.\n");
                 continue;
             }
 
+            //Analisa se a jogada escolhida foi feita de forma ortogonal e ao lado da posição atual.
             if(lin_ant != -1){
                 if(abs(l - lin_ant) + abs(c - col_ant) != 1){
                     printf("\nAs jogadas devem ser feitas de forma ortogonal! Tente novamente.\n");
@@ -225,6 +227,7 @@ void fazerJogada(Tabuleiro *tab, Pilha *mao){
                 }
             }
 
+            //Verifica se a posição escolhida já foi preenchida dentro da jogada.
             int repetida = 0;
             for(int i = 0; i < jogada; i++){
                 if(hist_linha[i] == l && hist_col[i] == c){
@@ -237,6 +240,8 @@ void fazerJogada(Tabuleiro *tab, Pilha *mao){
                 continue;
             }
 
+
+            //Realiza a jogada.
             tab->casa[l-1][c-1] = inserirPeca(tab->casa[l-1][c-1]);
             *mao = removerPeca(*mao);
 
@@ -270,6 +275,51 @@ void verificaPontuacao(Tabuleiro *tab, Pilha *pontuacao){
         }
     }
 }
+
+//Função que verifica as condições de parada do jogo.
+//Primeira condição: Linha escolhida está vazia.
+int condicaoParadaLinhaVazia(Tabuleiro *tab, int escolha){
+    int cond = 0;
+    for(int c = 0; c < tab->col; c++){
+        if(alturaPilha(tab->casa[escolha][c]) != 0){
+            cond = 1;
+            break;
+        }
+    }
+    if(cond == 0)
+        return 1;
+    else
+        return 0;
+}
+
+//Segunda condição: Coluna escolhida está vazia.
+int condicaoParadaColunaVazia(Tabuleiro *tab, int escolha){
+    int cond = 0;
+    for(int l = 0; l < tab->lin; l++){
+        if(alturaPilha(tab->casa[l][escolha]) != 0){
+            cond = 1;
+            break;
+        }
+    }
+    if(cond == 0)
+        return 1;
+    else
+        return 0;
+}
+
+//Terceira condição: Só existe uma peça em cada casa do tabuleiro.
+int condicaoParadaUnicaPeca(Tabuleiro *tab){
+    int cond = 0;
+    for(int l = 0; l < tab->lin; l++){
+        for(int c = 0; c < tab->col;c++){
+            if(alturaPilha(tab->casa[l][c]) > 1)
+                return 0;
+        }
+    }
+    return 1;
+}
+
+
 
 //Funções auxiliares.
 

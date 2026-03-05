@@ -64,7 +64,6 @@ int main(){
 
     //Informações dos jogadores.
     printf("\nNome do Jogador Branco: ");
-    getchar();
     fgets(jogador_01, 50, stdin);
     jogador_01[strcspn(jogador_01, "\n")] = '\0';
 
@@ -80,6 +79,10 @@ int main(){
             printf("\nJogador (Branco) %s escolha uma linha: ", jogador_01);
             scanf("%d", &lin_jog);
 
+            if(condicaoParadaLinhaVazia(tab, lin_jog - 1)){
+                break;
+            }
+
             coletarPecas(tab, lin_jog - 1, &mao);
             limpaTela();
             imprimeTabuleiro(tab);
@@ -88,6 +91,10 @@ int main(){
             fazerJogada(tab, &mao);
             pausa();
             verificaPontuacao(tab, &pontuacao_jog_branco);
+
+            if(condicaoParadaUnicaPeca(tab)){
+                break;
+            }
             jogada++;
 
         }

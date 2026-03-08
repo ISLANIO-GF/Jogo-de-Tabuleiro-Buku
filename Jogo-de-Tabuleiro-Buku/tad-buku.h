@@ -30,7 +30,7 @@ void destruirTabuleiro(Tabuleiro *tab);
 Pilha* criaPilha();
 
 //Função responsável por coletar as peças no tabuleiro.
-void coletarPecas(Tabuleiro *tab, int linha, Pilha *mao);
+void coletarPecas(Tabuleiro *tab, int jogada, Pilha *mao, char jogador);
 
 //Função para realizar a jogada.
 void fazerJogada(Tabuleiro *tab, Pilha *mao);
@@ -45,10 +45,9 @@ int condicaoParadaColunaVazia(Tabuleiro *tab, int escolha);
 //Terceira condição: Só existe uma peça em cada casa do tabuleiro.
 int condicaoParadaUnicaPeca(Tabuleiro *tab);
 
-//.
 
 //Função que verifica se houve pontuaçao dos jogadores.
-void verificaPontuacao(Tabuleiro *tab, Pilha *pontuacao);
+void verificaPontuacao(Tabuleiro *tab, Pilha *pontuacao, char jogador);
 
 //Função que exibe o menu do jogo.
 void menu();

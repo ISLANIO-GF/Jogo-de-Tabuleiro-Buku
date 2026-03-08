@@ -7,6 +7,7 @@
 #define FUNDO_MARROM    "\x1b[48;2;101;67;33m"
 #define TEXTO_PRETO     "\x1b[30m"
 #define TEXTO_BRANCO    "\x1b[37m"
+#define TEXTO_VERDE     "\x1b[32m"
 #define TEXTO_VERMELHO  "\x1b[31m"
 #define RESET           "\x1b[0m"
 
@@ -106,14 +107,15 @@ void imprimeTabuleiro(Tabuleiro *tab){
     else {
         printf("\n\t");
         for(int k = 0; k < tab->col; k++){
-            printf(" C%02d   ", k + 1);
+            printf(" C%02d   ", k + 1); //Imprime o cabeçalho das colunas.
         }
         printf("\n\n");
 
-        for(int i = 0; i < tab->lin; i++){
+        //Imprime a parte de cima das casa dando o efeito quadrado do tabuleiro.
+        for(int l = 0; l < tab->lin; l++){
             printf("       ");
-            for(int j = 0; j < tab->col; j++){
-                if((i+j) % 2 == 0)
+            for(int c = 0; c < tab->col; c++){
+                if((l+c) % 2 == 0)
                     printf(FUNDO_XADREZ);
                 else
                     printf(FUNDO_MARROM);
@@ -122,11 +124,12 @@ void imprimeTabuleiro(Tabuleiro *tab){
             printf(RESET);
             printf("\n");
 
-            printf(" L%02d - ", i + 1);
-            for(int j = 0; j < tab->col; j++){
-                Pilha p = tab->casa[i][j];
+           //Imprime a as peças dentro de cada casa.
+            printf(" L%02d - ", l + 1); //Imprime o cabeçalho das linhas.
+            for(int c = 0; c < tab->col; c++){
+                Pilha p = tab->casa[l][c];
 
-                if((i+j) % 2 == 0)
+                if((l+c) % 2 == 0)
                     printf(FUNDO_XADREZ TEXTO_PRETO);
                 else
                     printf(FUNDO_MARROM TEXTO_BRANCO);
@@ -140,7 +143,7 @@ void imprimeTabuleiro(Tabuleiro *tab){
                     else if(altura == 2)
                         printf("   @@  ");
                     else{
-                        printf(TEXTO_VERMELHO);
+                        printf(TEXTO_VERDE);
                         printf("  @@@  ");
                     }
                 }
@@ -148,9 +151,11 @@ void imprimeTabuleiro(Tabuleiro *tab){
                 printf(RESET);
             }
             printf("\n");
+
+            //Imprime a parte de baixo das casa dando o efeito quadrado do tabuleiro.
             printf("       ");
-            for(int j = 0; j < tab->col; j++){
-                if((i+j) % 2 == 0)
+            for(int c = 0; c < tab->col; c++){
+                if((l+c) % 2 == 0)
                     printf(FUNDO_XADREZ);
                 else
                     printf(FUNDO_MARROM);
@@ -180,19 +185,33 @@ void destruirTabuleiro(Tabuleiro *tab){
 
 
 //Função responsável por coletar as peças do jogador 01.
-void coletarPecas(Tabuleiro *tab, int linha, Pilha *mao){
-    if(linha < 0 || linha >= tab->lin){
+void coletarPecas(Tabuleiro *tab, int jogada, Pilha *mao, char jogador){
+    if(jogada < 0 || jogada >= tab->lin || jogada >= tab->col){
         printf("\nJogada incorreta. Jogador perdeu a vez!\n");
         pausa();
         return;
-    } else {
+    }
+    if(jogador == 'B') {
         for(int c = 0; c < tab->col; c++){
-            while(alturaPilha(tab->casa[linha][c]) > 0){
-                tab->casa[linha][c] = removerPeca(tab->casa[linha][c]);
+            while(alturaPilha(tab->casa[jogada][c]) > 0){
+                tab->casa[jogada][c] = removerPeca(tab->casa[jogada][c]);
                 *mao = inserirPeca(*mao);
             }
         }
     }
+    else if(jogador == 'P'){
+        for(int l = 0; l < tab->lin; l++){
+            while(alturaPilha(tab->casa[l][jogada]) > 0){
+                tab->casa[l][jogada] = removerPeca(tab->casa[l][jogada]);
+                *mao = inserirPeca(*mao);
+            }
+        }
+    }
+    else{
+        printf("Erro na função coletar peças");
+        return;
+    }
+
 }
 
 void fazerJogada(Tabuleiro *tab, Pilha *mao){
@@ -260,20 +279,46 @@ void fazerJogada(Tabuleiro *tab, Pilha *mao){
 
 
 //Função que verifica se houve pontuação dos jogadores.
-void verificaPontuacao(Tabuleiro *tab, Pilha *pontuacao){
-    int alt = 0;
+void verificaPontuacao(Tabuleiro *tab, Pilha *pontuacao, char jogador){
+    int alt = 0, parcial = 0;
     for(int l = 0; l < tab->lin; l++){
         for(int c = 0; c < tab->col; c++){
-            alt = alturaPilha(tab->casa[l][c]);
-            if(alt >= 3){
-                while(alt > 0){
-                    tab->casa[l][c] = removerPeca(tab->casa[l][c]);
-                    *pontuacao = inserirPeca(*pontuacao);
-                    alt--;
+
+            //Verifica a pontuação por 3 peças para o jogador branco.
+            if(jogador == 'B'){
+                if((l+c) % 2 == 0){
+                    alt = alturaPilha(tab->casa[l][c]);
+                    if(alt >= 3){
+                        while(alt > 0){
+                            tab->casa[l][c] = removerPeca(tab->casa[l][c]);
+                            *pontuacao = inserirPeca(*pontuacao);
+                            alt--;
+                            parcial++;
+                        }
+                    }
                 }
+            }
+            //Verifica a pontuação para três peças para o jogador preto.
+            else if(jogador == 'P'){
+                if((l+c) % 2 != 0){
+                    alt = alturaPilha(tab->casa[l][c]);
+                    if(alt >= 3){
+                        while(alt > 0){
+                            tab->casa[l][c] = removerPeca(tab->casa[l][c]);
+                            *pontuacao = inserirPeca(*pontuacao);
+                            alt--;
+                            parcial++;
+                        }
+                    }
+                }
+            }
+            else{
+                printf("Erro na função de pontuação!");
+                return;
             }
         }
     }
+    printf("\nPontuação na rodadada: %d", parcial);
 }
 
 //Função que verifica as condições de parada do jogo.

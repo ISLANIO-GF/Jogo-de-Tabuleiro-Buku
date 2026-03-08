@@ -75,6 +75,7 @@ int main(){
     printf("\n===== Iniciando o Jogo. Boa sorte ao jogadores! =====\n");
     do{
         if(jogada % 2 != 0){
+            limpaTela();
             imprimeTabuleiro(tab);
             printf("\nJogador (Branco) %s escolha uma linha: ", jogador_01);
             scanf("%d", &lin_jog);
@@ -83,14 +84,15 @@ int main(){
                 break;
             }
 
-            coletarPecas(tab, lin_jog - 1, &mao);
+            coletarPecas(tab, lin_jog - 1, &mao, 'B'); //'B' é o sinal para a função que a jogada é do jogador branco.
             limpaTela();
             imprimeTabuleiro(tab);
 
 
             fazerJogada(tab, &mao);
+            verificaPontuacao(tab, &pontuacao_jog_branco, 'B'); //'B' é o sinal para a função que a jogada é do jogador branco.
+            printf("\nPontuação Total do jogador (Branco) %s: %d\n", jogador_01, alturaPilha(pontuacao_jog_branco));
             pausa();
-            verificaPontuacao(tab, &pontuacao_jog_branco);
 
             if(condicaoParadaUnicaPeca(tab)){
                 break;
@@ -103,6 +105,17 @@ int main(){
             imprimeTabuleiro(tab);
             printf("\nJogador (Preto) %s escolha uma coluna: ", jogador_02);
             scanf("%d", &col_jog);
+
+            coletarPecas(tab, col_jog - 1, &mao, 'P'); //'P' é o sinal para a função que a jogada é do jogador preto.
+            limpaTela();
+            imprimeTabuleiro(tab);
+
+            fazerJogada(tab, &mao);
+            verificaPontuacao(tab, &pontuacao_jog_preto, 'P'); //'P' é o sinal para a função que a jogada é do jogador preto.
+            printf("\nPontuação Total do jogador (Preto) %s: %d\n", jogador_02, alturaPilha(pontuacao_jog_preto));
+            pausa();
+
+
             jogada++;
         }
     } while(lin_jog != -1 && col_jog != -1);

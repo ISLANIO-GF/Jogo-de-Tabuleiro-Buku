@@ -323,42 +323,87 @@ void verificaPontuacao(Tabuleiro *tab, Pilha *pontuacao, char jogador){
 
 //Função que verifica as condições de parada do jogo.
 //Primeira condição: Linha escolhida está vazia.
-int condicaoParadaLinhaVazia(Tabuleiro *tab, int escolha){
-    int cond = 0;
+int condicaoParadaLinhaVazia(Tabuleiro *tab, int escolha, Pilha *pontuacao){
+    if(escolha < 0 || escolha >= tab->lin)
+        return 0;
+
+    int cond = 0, alt = 0;
     for(int c = 0; c < tab->col; c++){
         if(alturaPilha(tab->casa[escolha][c]) != 0){
             cond = 1;
             break;
         }
     }
-    if(cond == 0)
+    if(cond == 0){
+        for(int l = 0; l < tab->lin; l++){
+            for(int c = 0; c < tab->col; c++){
+                alt = alturaPilha(tab->casa[l][c]);
+                while(alt != 0){
+                    tab->casa[l][c] = removerPeca(tab->casa[l][c]);
+                    *pontuacao = inserirPeca(*pontuacao);
+                    alt--;
+                }
+            }
+        }
         return 1;
+    }
     else
         return 0;
 }
 
 //Segunda condição: Coluna escolhida está vazia.
-int condicaoParadaColunaVazia(Tabuleiro *tab, int escolha){
-    int cond = 0;
+int condicaoParadaColunaVazia(Tabuleiro *tab, int escolha, Pilha *pontuacao){
+    if(escolha < 0 || escolha >= tab->col)
+        return 0;
+
+    int cond = 0, alt = 0;
     for(int l = 0; l < tab->lin; l++){
         if(alturaPilha(tab->casa[l][escolha]) != 0){
             cond = 1;
             break;
         }
     }
-    if(cond == 0)
+    if(cond == 0){
+        for(int l = 0; l < tab->lin; l++){
+            for(int c = 0; c < tab->col; c++){
+                alt = alturaPilha(tab->casa[l][c]);
+                while(alt != 0){
+                    tab->casa[l][c] = removerPeca(tab->casa[l][c]);
+                    *pontuacao = inserirPeca(*pontuacao);
+                    alt--;
+                }
+            }
+        }
         return 1;
+    }
     else
         return 0;
 }
 
 //Terceira condição: Só existe uma peça em cada casa do tabuleiro.
-int condicaoParadaUnicaPeca(Tabuleiro *tab){
+int condicaoParadaUnicaPeca(Tabuleiro *tab, Pilha *pontuacaoBranco, Pilha *pontuacaoPreto){
     int cond = 0;
     for(int l = 0; l < tab->lin; l++){
         for(int c = 0; c < tab->col;c++){
             if(alturaPilha(tab->casa[l][c]) > 1)
                 return 0;
+        }
+    }
+    int alt;
+    for(int l = 0; l < tab->lin; l++){
+        for(int c = 0; c < tab->col;c++){
+            alt = alturaPilha(tab->casa[l][c]);
+            if((l+c) % 2 == 0){
+                while(alt > 0){
+                    *pontuacaoBranco = inserirPeca(*pontuacaoBranco);
+                    alt--;
+                }
+            } else {
+                while(alt > 0){
+                    *pontuacaoPreto = inserirPeca(*pontuacaoPreto);
+                    alt--;
+                }
+            }
         }
     }
     return 1;

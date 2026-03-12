@@ -27,7 +27,14 @@ int main(){
         if(tam_tab % 2 == 0 && tam_tab > 5){
             tab = criaTabuleiro(tam_tab);
             iniciarTabuleiro(tab);
-            printf("\n========== Tabuleiro Criado com sucesso! ==========\n");
+
+            printf("\n");
+            for(int i = 0; i < tam_tab * 3.5 - 12; i++)
+                printf("=");
+            printf(" Tabuleiro Criado com sucesso! ");
+            for(int i = 0; i < tam_tab * 3.5 - 12; i++)
+                printf("=");
+
             imprimeTabuleiro(tab);
             pausa();
         }
@@ -58,7 +65,6 @@ int main(){
 
 
     //Iniciando o jogo.
-
     limpaTela();
     printf("\nPara comerçamos precisamos do nome dos jogadores.\n");
 
@@ -80,23 +86,22 @@ int main(){
             printf("\nJogador (Branco) %s escolha uma linha: ", jogador_01);
             scanf("%d", &lin_jog);
 
-            if(condicaoParadaLinhaVazia(tab, lin_jog - 1)){
+            if(condicaoParadaLinhaVazia(tab, lin_jog - 1, &pontuacao_jog_preto)) //Função que verifica se o jogador escolheu uma linha vazia.
                 break;
-            }
 
             coletarPecas(tab, lin_jog - 1, &mao, 'B'); //'B' é o sinal para a função que a jogada é do jogador branco.
             limpaTela();
             imprimeTabuleiro(tab);
-
 
             fazerJogada(tab, &mao);
             verificaPontuacao(tab, &pontuacao_jog_branco, 'B'); //'B' é o sinal para a função que a jogada é do jogador branco.
             printf("\nPontuação Total do jogador (Branco) %s: %d\n", jogador_01, alturaPilha(pontuacao_jog_branco));
             pausa();
 
-            if(condicaoParadaUnicaPeca(tab)){
-                break;
-            }
+            if(jogada != 1)
+                if(condicaoParadaUnicaPeca(tab, &pontuacao_jog_branco, &pontuacao_jog_preto)) //Função que verifica se existem apeas uma peça em cada casa do tabuleiro (condição para finalizar o jogo).
+                    break;
+
             jogada++;
 
         }
@@ -105,6 +110,9 @@ int main(){
             imprimeTabuleiro(tab);
             printf("\nJogador (Preto) %s escolha uma coluna: ", jogador_02);
             scanf("%d", &col_jog);
+
+            if(condicaoParadaColunaVazia(tab, col_jog - 1, &pontuacao_jog_branco)) //Função que verifica se o jogador escolheu uma linha vazia.
+                break;
 
             coletarPecas(tab, col_jog - 1, &mao, 'P'); //'P' é o sinal para a função que a jogada é do jogador preto.
             limpaTela();
@@ -115,6 +123,9 @@ int main(){
             printf("\nPontuação Total do jogador (Preto) %s: %d\n", jogador_02, alturaPilha(pontuacao_jog_preto));
             pausa();
 
+            if(jogada > 2)
+                if(condicaoParadaUnicaPeca(tab, &pontuacao_jog_branco, &pontuacao_jog_preto)) //Função que verifica se existem apeas uma peça em cada casa do tabuleiro (condição para finalizar o jogo).
+                    break;
 
             jogada++;
         }
@@ -122,8 +133,8 @@ int main(){
 
 
 
-
-
+    printf("\nPontuação Total do jogador (Branco) %s: %d\n", jogador_01, alturaPilha(pontuacao_jog_branco));
+    printf("\nPontuação Total do jogador (Preto) %s: %d\n", jogador_02, alturaPilha(pontuacao_jog_preto));
     destruirTabuleiro(tab);
     return 0;
 }

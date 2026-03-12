@@ -37,13 +37,13 @@ void fazerJogada(Tabuleiro *tab, Pilha *mao);
 
 //Função que verifica as condições de parada do jogo.
 //Primeira condição: Linha escolhida está vazia.
-int condicaoParadaLinhaVazia(Tabuleiro *tab, int escolha);
+int condicaoParadaLinhaVazia(Tabuleiro *tab, int escolha, Pilha *pontuacao);
 
 //Segunda condição: Coluna escolhida está vazia.
-int condicaoParadaColunaVazia(Tabuleiro *tab, int escolha);
+int condicaoParadaColunaVazia(Tabuleiro *tab, int escolha, Pilha *pontuacao);
 
 //Terceira condição: Só existe uma peça em cada casa do tabuleiro.
-int condicaoParadaUnicaPeca(Tabuleiro *tab);
+int condicaoParadaUnicaPeca(Tabuleiro *tab, Pilha *pontuacaoBranco, Pilha *pontuacaoPreto);
 
 
 //Função que verifica se houve pontuaçao dos jogadores.

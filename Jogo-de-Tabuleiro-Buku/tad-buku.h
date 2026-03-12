@@ -15,10 +15,10 @@ void iniciarTabuleiro(Tabuleiro *tab);
 int alturaPilha(Pilha pilha);
 
 //Função para inserir peças.
-Pilha inserirPeca(Pilha p);
+int inserirPeca(Pilha *p);
 
 //Função para remover peças.
-Pilha removerPeca(Pilha p);
+int removerPeca(Pilha *p);
 
 //Função que imprime o tabuleiro.
 void imprimeTabuleiro(Tabuleiro *tab);

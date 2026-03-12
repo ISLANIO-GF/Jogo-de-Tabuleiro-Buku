@@ -47,41 +47,43 @@ Tabuleiro* criaTabuleiro(int tam){
 void iniciarTabuleiro(Tabuleiro *tab){
     for(int i = 0; i <tab->lin;i++){
         for(int j = 0; j < tab->col;j++){
-            tab->casa[i][j] = inserirPeca(tab->casa[i][j]);
+            if(inserirPeca(&tab->casa[i][j]) == 0)
+                printf("Erro na inserção de peças na função iniciartabuleiro.");
         }
     }
 }
 
 //Função para inserir peças.
-Pilha inserirPeca(Pilha p){
+int inserirPeca(Pilha *p){
+    if(p == NULL)
+        return 0;
     Peca *novo = (Peca*)malloc(sizeof(Peca));
-    if(novo == NULL){
-        printf("Erro ao inserir pecas");
-        return p;
-    }
-    novo->prox = p;
-    return novo;
+    if(novo == NULL)
+        return 0;
+    novo->prox = *p;
+    *p = novo;
+    return 1;
 }
 
 //Função para remover peças.
-Pilha removerPeca(Pilha p){
-    if(p == NULL)
-        return NULL;
+int removerPeca(Pilha *p){
+    if(p == NULL || *p == NULL)
+        return 0;
     else {
-        Peca *aux = p;
-        p = p->prox;
+        Peca *aux = *p;
+        *p = aux->prox;
         free(aux);
-        return p;
+        return 1;
     }
 }
 
-//Função que determina a altura de uma pelha (número de peças).
-int alturaPilha(Pilha pilha){
-    if(pilha == NULL)
+//Função que determina a altura de uma pilha (número de peças).
+int alturaPilha(Pilha p){
+    if(p == NULL)
         return 0;
     else {
         int cont = 0;
-        Peca *aux = pilha;
+        Peca *aux = p;
         while(aux != NULL){
             cont++;
             aux = aux->prox;

@@ -48,7 +48,7 @@ void iniciarTabuleiro(Tabuleiro *tab){
     for(int i = 0; i <tab->lin;i++){
         for(int j = 0; j < tab->col;j++){
             if(inserirPeca(&tab->casa[i][j]) == 0)
-                printf("Erro na inserção de peças na função iniciartabuleiro.");
+                printf("\nErro na inserção de peças na função iniciartabuleiro.\n");
         }
     }
 }
@@ -75,6 +75,20 @@ int removerPeca(Pilha *p){
         free(aux);
         return 1;
     }
+}
+
+
+//Função responsavelpor mover as peças do jogo.
+int moverPecas(Pilha *origem, Pilha *destino){
+    if(origem == NULL || *origem == NULL)
+        return 0;
+
+    Peca *aux = *origem;
+    *origem = aux->prox;
+    aux->prox = *destino;
+    *destino = aux;
+
+    return 1;
 }
 
 //Função que determina a altura de uma pilha (número de peças).
@@ -193,19 +207,19 @@ void coletarPecas(Tabuleiro *tab, int jogada, Pilha *mao, char jogador){
         pausa();
         return;
     }
-    if(jogador == 'B') {
+    if(jogador == 'B') { //Faz a coleta das peças na horizontal.
         for(int c = 0; c < tab->col; c++){
-            while(alturaPilha(tab->casa[jogada][c]) > 0){
-                tab->casa[jogada][c] = removerPeca(tab->casa[jogada][c]);
-                *mao = inserirPeca(*mao);
+            while(tab->casa[jogada][c] != NULL){
+                if(moverPecas(&tab->casa[jogada][c], mao) == 0)
+                    printf("\nErro ao mover peça da linha do tabuleiro para a mão do jogador.\n");
             }
         }
     }
     else if(jogador == 'P'){
         for(int l = 0; l < tab->lin; l++){
-            while(alturaPilha(tab->casa[l][jogada]) > 0){
-                tab->casa[l][jogada] = removerPeca(tab->casa[l][jogada]);
-                *mao = inserirPeca(*mao);
+            while(tab->casa[l][jogada] != NULL){
+                if(moverPecas(&tab->casa[l][jogada], mao) == 0)
+                    printf("\nErro ao mover peça da coluna do tabuleiro para a mão do jogador.\n");
             }
         }
     }
@@ -216,6 +230,7 @@ void coletarPecas(Tabuleiro *tab, int jogada, Pilha *mao, char jogador){
 
 }
 
+//Função responsavel por realizar a jogada.
 void fazerJogada(Tabuleiro *tab, Pilha *mao){
     if(*mao == NULL){
         return;
@@ -263,8 +278,8 @@ void fazerJogada(Tabuleiro *tab, Pilha *mao){
 
 
             //Realiza a jogada.
-            tab->casa[l-1][c-1] = inserirPeca(tab->casa[l-1][c-1]);
-            *mao = removerPeca(*mao);
+            if(moverPecas(mao, &tab->casa[l-1][c-1]) == 0)
+                printf("\nErro ao mover peças da mão para o tabuleiro durante a jogada.\n");
 
             lin_ant = l;
             col_ant = c;
@@ -292,8 +307,8 @@ void verificaPontuacao(Tabuleiro *tab, Pilha *pontuacao, char jogador){
                     alt = alturaPilha(tab->casa[l][c]);
                     if(alt >= 3){
                         while(alt > 0){
-                            tab->casa[l][c] = removerPeca(tab->casa[l][c]);
-                            *pontuacao = inserirPeca(*pontuacao);
+                            if(moverPecas(&tab->casa[l][c], pontuacao) == 0)
+                                printf("\nErro ao mover peças do tabuleiro para a pilha de pontuação na função verificaPontuacao.\n");
                             alt--;
                             parcial++;
                         }
@@ -306,8 +321,8 @@ void verificaPontuacao(Tabuleiro *tab, Pilha *pontuacao, char jogador){
                     alt = alturaPilha(tab->casa[l][c]);
                     if(alt >= 3){
                         while(alt > 0){
-                            tab->casa[l][c] = removerPeca(tab->casa[l][c]);
-                            *pontuacao = inserirPeca(*pontuacao);
+                            if(moverPecas(&tab->casa[l][c], pontuacao) == 0)
+                                printf("\nErro ao mover peças do tabuleiro para a pilha de pontuação na função verificaPontuacao.\n");
                             alt--;
                             parcial++;
                         }
@@ -341,8 +356,8 @@ int condicaoParadaLinhaVazia(Tabuleiro *tab, int escolha, Pilha *pontuacao){
             for(int c = 0; c < tab->col; c++){
                 alt = alturaPilha(tab->casa[l][c]);
                 while(alt != 0){
-                    tab->casa[l][c] = removerPeca(tab->casa[l][c]);
-                    *pontuacao = inserirPeca(*pontuacao);
+                    if(moverPecas(&tab->casa[l][c], pontuacao) == 0)
+                        printf("\nErro ao mover peças do tabuleiro para a pontuação do jogador na função condicaoParadaPorLinhaVazia.\n");
                     alt--;
                 }
             }
@@ -370,8 +385,8 @@ int condicaoParadaColunaVazia(Tabuleiro *tab, int escolha, Pilha *pontuacao){
             for(int c = 0; c < tab->col; c++){
                 alt = alturaPilha(tab->casa[l][c]);
                 while(alt != 0){
-                    tab->casa[l][c] = removerPeca(tab->casa[l][c]);
-                    *pontuacao = inserirPeca(*pontuacao);
+                    if(moverPecas(&tab->casa[l][c], pontuacao) == 0)
+                        printf("\nErro ao mover peças do tabuleiro para a pontuação do jogador na função condicaoParadaPorLinhaVazia.\n");
                     alt--;
                 }
             }
@@ -397,12 +412,14 @@ int condicaoParadaUnicaPeca(Tabuleiro *tab, Pilha *pontuacaoBranco, Pilha *pontu
             alt = alturaPilha(tab->casa[l][c]);
             if((l+c) % 2 == 0){
                 while(alt > 0){
-                    *pontuacaoBranco = inserirPeca(*pontuacaoBranco);
+                    if(moverPecas(&tab->casa[l][c], pontuacaoBranco) == 0)
+                        printf("\nErro ao mover peças do tabuleiro para a pilha de pontuação na função condicaoParadaUnicaPeca.\n");
                     alt--;
                 }
             } else {
                 while(alt > 0){
-                    *pontuacaoPreto = inserirPeca(*pontuacaoPreto);
+                    if(moverPecas(&tab->casa[l][c], pontuacaoPreto) == 0)
+                        printf("\nErro ao mover peças do tabuleiro para a pilha de pontuação na função condicaoParadaUnicaPeca.\n");
                     alt--;
                 }
             }

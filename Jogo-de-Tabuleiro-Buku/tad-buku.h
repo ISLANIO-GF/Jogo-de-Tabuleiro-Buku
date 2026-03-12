@@ -17,8 +17,13 @@ int alturaPilha(Pilha pilha);
 //Função para inserir peças.
 int inserirPeca(Pilha *p);
 
+//Função responsavel por mover as peças do jogo.
+int moverPecas(Pilha *origem, Pilha *destino);
+
+
 //Função para remover peças.
 int removerPeca(Pilha *p);
+
 
 //Função que imprime o tabuleiro.
 void imprimeTabuleiro(Tabuleiro *tab);

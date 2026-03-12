@@ -59,9 +59,9 @@ int main(){
     No momento que se cria a pilha a mesma já inicia com um elemento.
     Para resolver esse problema chama a função removerPeca uma vez antes de iniciar o jogo.
     */
-    mao = removerPeca(mao); //O objetivo aqui é deixar a mão sem nenhuma peça.
-    pontuacao_jog_branco = removerPeca(pontuacao_jog_branco); //O objetivo aqui é deixar a pontuação do jogador branco zerada.
-    pontuacao_jog_preto = removerPeca(pontuacao_jog_preto); //O objetivo aqui é deixar a pontuação do jogador branco zerada.
+    removerPeca(&mao); //O objetivo aqui é deixar a mão sem nenhuma peça.
+    removerPeca(&pontuacao_jog_branco); //O objetivo aqui é deixar a pontuação do jogador branco zerada.
+    removerPeca(&pontuacao_jog_preto); //O objetivo aqui é deixar a pontuação do jogador branco zerada.
 
 
     //Iniciando o jogo.
@@ -135,6 +135,7 @@ int main(){
 
     printf("\nPontuação Total do jogador (Branco) %s: %d\n", jogador_01, alturaPilha(pontuacao_jog_branco));
     printf("\nPontuação Total do jogador (Preto) %s: %d\n", jogador_02, alturaPilha(pontuacao_jog_preto));
+
     destruirTabuleiro(tab);
     return 0;
 }

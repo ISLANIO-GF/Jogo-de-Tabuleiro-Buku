@@ -11,34 +11,26 @@ Tabuleiro* criaTabuleiro(int tam);
 //Função para iniciar o tabuleiro com uma peça em cada casa.
 void iniciarTabuleiro(Tabuleiro *tab);
 
-//Função que determina a altura de uma pelha (número de peças).
-int alturaPilha(Pilha pilha);
-
-//Função para inserir peças.
-int inserirPeca(Pilha *p);
-
-//Função responsavel por mover as peças do jogo.
-int moverPecas(Pilha *origem, Pilha *destino);
-
-
-//Função para remover peças.
-int removerPeca(Pilha *p);
-
+//Função para destruir o tabuleiro.
+void destruirTabuleiro(Tabuleiro *tab);
 
 //Função que imprime o tabuleiro.
 void imprimeTabuleiro(Tabuleiro *tab);
 
-//Função para destruir o tabuleiro.
-void destruirTabuleiro(Tabuleiro *tab);
-
-//Função para criar pilha da mão e de potuação dos jogadores.
+//Função para criar pilha.
 Pilha* criaPilha();
+
+//Função para destruir uma pilha.
+void destruirPilha(Pilha *p);
+
+//Função para remover peças.
+int removerPeca(Pilha *p);
 
 //Função responsável por coletar as peças no tabuleiro.
 void coletarPecas(Tabuleiro *tab, int jogada, Pilha *mao, char jogador);
 
 //Função para realizar a jogada.
-void fazerJogada(Tabuleiro *tab, Pilha *mao);
+void fazerJogada(Tabuleiro *tab, Pilha *mao, int tam_tab, char *jogador_01, char *jogador_02, Pilha pontuacao_jog_branco, Pilha pontuacao_jog_preto);
 
 //Função que verifica as condições de parada do jogo.
 //Primeira condição: Linha escolhida está vazia.
@@ -54,6 +46,9 @@ int condicaoParadaUnicaPeca(Tabuleiro *tab, Pilha *pontuacaoBranco, Pilha *pontu
 //Função que verifica se houve pontuaçao dos jogadores.
 void verificaPontuacao(Tabuleiro *tab, Pilha *pontuacao, char jogador);
 
+//Função que exibe menu de pontuação dos jogadores.
+void exiberPontuacao(int tam_tab, char *jogador_01, char *jogador_02, Pilha pontuacao_jog_branco, Pilha pontuacao_jog_preto);
+
 //Função que exibe o menu do jogo.
 void menu();
 
@@ -62,6 +57,9 @@ void limpaTela();
 
 //Função pausa.
 void pausa();
+
+//Função que exibe as regras do jogo.
+void exibirRegras();
 
 
 

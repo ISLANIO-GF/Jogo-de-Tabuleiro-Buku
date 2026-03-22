@@ -1,15 +1,19 @@
 # depslib dependency file v1.0
-1773344129 source:c:\users\islan\onedrive\educa«√o\ufca\faculdade\5∫ semestre\laed\projeto-islanio-feitosa-jogo-de-tabuleiro-buku\jogo-de-tabuleiro-buku\main.c
+1774192974 source:c:\users\islan\onedrive\educa«√o\ufca\faculdade\5∫ semestre\laed\projeto-islanio-feitosa-jogo-de-tabuleiro-buku\jogo-de-tabuleiro-buku\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	<locale.h>
 	"tad-buku.h"
 
-1773342871 c:\users\islan\onedrive\educa«√o\ufca\faculdade\5∫ semestre\laed\projeto-islanio-feitosa-jogo-de-tabuleiro-buku\jogo-de-tabuleiro-buku\tad-buku.h
+1774118820 c:\users\islan\onedrive\educa«√o\ufca\faculdade\5∫ semestre\laed\projeto-islanio-feitosa-jogo-de-tabuleiro-buku\jogo-de-tabuleiro-buku\tad-buku.h
 
-1773344550 source:c:\users\islan\onedrive\educa«√o\ufca\faculdade\5∫ semestre\laed\projeto-islanio-feitosa-jogo-de-tabuleiro-buku\jogo-de-tabuleiro-buku\tad-buku.c
+1774192974 source:c:\users\islan\onedrive\educa«√o\ufca\faculdade\5∫ semestre\laed\projeto-islanio-feitosa-jogo-de-tabuleiro-buku\jogo-de-tabuleiro-buku\tad-buku.c
 	<stdio.h>
 	<stdlib.h>
 	"tad-buku.h"
+
+1774192232 source:c:\users\islan\onedrive\¡rea de trabalho\test.c
+	<stdio.h>
+	<stdlib.h>
 

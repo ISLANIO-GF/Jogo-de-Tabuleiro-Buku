@@ -24,33 +24,41 @@ struct peca {
 
 typedef struct peca Peca;
 
-//Função que cria o tabuleiro.
-Tabuleiro* criaTabuleiro(int tam){
-    Tabuleiro* tab = (Tabuleiro*)malloc(sizeof(Tabuleiro));
-    if (tab == NULL){
-        printf("Erro ao criar o tabuleiro!");
-        exit(1);
-    }
-    tab->lin = tam;
-    tab->col = tam;
-    tab->casa = (Pilha**)malloc(tam * sizeof(Pilha*));
-    for (int i = 0; i < tam; i++){
-        tab->casa[i] = (Pilha*)malloc(tam * sizeof(Pilha));
-        for(int j = 0; j < tam; j++){
-            tab->casa[i][j] = NULL;
-        }
-    }
-    return tab;
+
+
+//Função para criar pilha.
+Pilha* criaPilha(){
+    Pilha *p = (Pilha*)malloc(sizeof(Pilha));
+    if(p != NULL)
+        *p = NULL;
+    return p;
 }
 
-//Função para iniciar o tabuleiro com uma peça em cada casa.
-void iniciarTabuleiro(Tabuleiro *tab){
-    for(int i = 0; i <tab->lin;i++){
-        for(int j = 0; j < tab->col;j++){
-            if(inserirPeca(&tab->casa[i][j]) == 0)
-                printf("\nErro na inserção de peças na função iniciartabuleiro.\n");
+//Função para destruir uma pilha.
+void destruirPilha(Pilha *p){
+    if(p != NULL){
+        Peca *aux;
+        while(*p != NULL){
+            aux = *p;
+            *p = aux->prox;
+            free(aux);
         }
+        free(p);
     }
+
+}
+
+//Função que faz uma copia de pilha.
+Pilha* backupPilha(Pilha *p){
+    if(p == NULL || *p == NULL)
+        return NULL;
+    Pilha *novaPilha = criaPilha();
+    Peca *aux = *p;
+    while(aux != NULL){
+        inserirPeca(novaPilha);
+        aux = aux->prox;
+    }
+    return novaPilha;
 }
 
 //Função para inserir peças.
@@ -106,12 +114,77 @@ int alturaPilha(Pilha p){
     }
 }
 
-//Função para criar pilha da mão e de potuação dos jogadores.
-Pilha* criaPilha(){
-    Pilha *p = (Pilha*)malloc(sizeof(Pilha));
-    if(p != NULL)
-        *p = NULL;
-    return p;
+
+
+//Função que cria o tabuleiro.
+Tabuleiro* criaTabuleiro(int tam){
+    Tabuleiro* tab = (Tabuleiro*)malloc(sizeof(Tabuleiro));
+    if (tab == NULL){
+        printf("\nErro ao criar o tabuleiro!\n");
+        exit(1);
+    }
+    tab->lin = tam;
+    tab->col = tam;
+    tab->casa = (Pilha**)malloc(tam * sizeof(Pilha*));
+    for (int i = 0; i < tam; i++){
+        tab->casa[i] = (Pilha*)malloc(tam * sizeof(Pilha));
+        for(int j = 0; j < tam; j++){
+            tab->casa[i][j] = NULL;
+        }
+    }
+    return tab;
+}
+
+//Função para iniciar o tabuleiro com uma peça em cada casa.
+void iniciarTabuleiro(Tabuleiro *tab){
+    for(int i = 0; i <tab->lin;i++){
+        for(int j = 0; j < tab->col;j++){
+            if(inserirPeca(&tab->casa[i][j]) == 0)
+                printf("\nErro na inserção de peças na função iniciartabuleiro.\n");
+        }
+    }
+}
+
+
+//Função que faz uma copia do tabuleiro.
+Tabuleiro* backupTabuleiro(Tabuleiro *tab){
+    if(tab == NULL)
+        return NULL;
+    Tabuleiro *novoTab = (Tabuleiro*)malloc(sizeof(Tabuleiro));
+    if(novoTab == NULL){
+        printf("\nErro ao copiar tabuleiro.\n");
+        return NULL;
+    }
+    novoTab->lin = tab->lin;
+    novoTab->col = tab->col;
+    novoTab->casa = (Pilha**)malloc(tab->lin * sizeof(Pilha*));
+    for(int l = 0; l < tab->lin; l++){
+        novoTab->casa[l] = (Pilha*)malloc(tab->col * sizeof(Pilha));
+        for(int c = 0; c < tab->col; c++){
+            Pilha *copia = backupPilha(&tab->casa[l][c]);
+            if(copia != NULL){
+                novoTab->casa[l][c] = *copia;
+                free(copia);
+            }
+            else
+                novoTab->casa[l][c] = NULL;
+        }
+    }
+    return novoTab;
+}
+
+//Função para destruir o tabuleiro.
+void destruirTabuleiro(Tabuleiro *tab){
+    if(tab != NULL){
+        for(int l = 0; l <tab->lin;l++){
+            for(int c = 0; c < tab->col;c++){
+                destruirPilha(tab->casa[l][c]);
+            }
+            free(tab->casa[l]);
+        }
+        free(tab->casa);
+        free(tab);
+    }
 }
 
 
@@ -184,26 +257,13 @@ void imprimeTabuleiro(Tabuleiro *tab){
     }
 }
 
-//Função para destruir o tabuleiro.
-void destruirTabuleiro(Tabuleiro *tab){
-    if(tab != NULL){
-        for(int i = 0; i <tab->lin;i++){
-            for(int j = 0; j < tab->col;j++){
-                while(tab->casa[i][j] != NULL)
-                    tab->casa[i][j] = removerPeca(tab->casa[i][j]);
-            }
-            free(tab->casa[i]);
-        }
-        free(tab->casa);
-        free(tab);
-    }
-}
 
 
 //Função responsável por coletar as peças do jogador 01.
 void coletarPecas(Tabuleiro *tab, int jogada, Pilha *mao, char jogador){
     if(jogada < 0 || jogada >= tab->lin || jogada >= tab->col){
         printf("\nJogada incorreta. Jogador perdeu a vez!\n");
+        while(getchar() != '\n');
         pausa();
         return;
     }
@@ -230,68 +290,169 @@ void coletarPecas(Tabuleiro *tab, int jogada, Pilha *mao, char jogador){
 
 }
 
-//Função responsavel por realizar a jogada.
-void fazerJogada(Tabuleiro *tab, Pilha *mao){
-    if(*mao == NULL){
-        return;
-    }
-    else{
-        int l = 0, c = 0, lin_ant = -1, col_ant = -1, jogada = 0;
-        int max = alturaPilha(*mao);
-        int hist_linha[max], hist_col[max];
+//Função que veriffica se o jogador está sem opções de jogada.
+int validarJogada(Tabuleiro *tab, int histLinha[], int histColuna[], int l, int c, int jogada){
+    int opLinha[] = {-1, 1, 0, 0};
+    int opColuna[] = {0, 0, -1, 1};
+    int novaLinha, novaColuna, jogadorPreso = 0;
 
-        while(*mao != NULL){
-            printf("\nSua mão tem %d peças.\n", alturaPilha(*mao));
+    for(int i = 0; i < 4; i++){
+        novaLinha = l + opLinha[i];
+        novaColuna = c + opColuna[i];
 
-            printf("Escolha uma posição para colocar uma peça de 1 a %d:\n", tab->col);
-            printf("Linha: ");
-            scanf("%d", &l);
-            printf("Coluna: ");
-            scanf("%d", &c);
 
-            //Verifica se a posição escolhida está dentro do tabuleiro.
-            if(l <= 0 || l > tab->lin || c <= 0 || c > tab->col){
-                printf("\nPosição inválida! Tente novamente.\n");
-                continue;
-            }
-
-            //Analisa se a jogada escolhida foi feita de forma ortogonal e ao lado da posição atual.
-            if(lin_ant != -1){
-                if(abs(l - lin_ant) + abs(c - col_ant) != 1){
-                    printf("\nAs jogadas devem ser feitas de forma ortogonal! Tente novamente.\n");
-                    continue;
-                }
-            }
-
-            //Verifica se a posição escolhida já foi preenchida dentro da jogada.
+        if(novaLinha > 0 && novaLinha <= tab->lin && novaColuna > 0 && novaColuna <= tab->col){
             int repetida = 0;
-            for(int i = 0; i < jogada; i++){
-                if(hist_linha[i] == l && hist_col[i] == c){
+            for(int j = 0; j < jogada; j++){
+                if(histLinha[j] == novaLinha && histColuna[j] == novaColuna){
                     repetida = 1;
                     break;
                 }
             }
             if(repetida){
-                printf("\nPosição já foi usada! Tente novamente.\n");
-                continue;
+                jogadorPreso++;
             }
-
-
-            //Realiza a jogada.
-            if(moverPecas(mao, &tab->casa[l-1][c-1]) == 0)
-                printf("\nErro ao mover peças da mão para o tabuleiro durante a jogada.\n");
-
-            lin_ant = l;
-            col_ant = c;
-
-            hist_linha[jogada] = l;
-            hist_col[jogada] = c;
-            jogada++;
-
-            limpaTela();
-            imprimeTabuleiro(tab);
+        }
+        else {
+            jogadorPreso++;
         }
     }
+    if(jogadorPreso == 4)
+        return 0;
+    else
+        return 1;
+}
+
+//Função que restaura o backup do Tabuleiro.
+void restaurarBackupTab(Tabuleiro *tab, Tabuleiro *backup){
+    if(tab == NULL || backup == NULL)
+        return;
+    int alt = 0;
+    for(int l = 0; l < tab->lin; l++){
+        for(int c = 0; c < tab->col; c++){
+            while(tab->casa[l][c] != NULL)
+                removerPeca(&tab->casa[l][c]);
+
+
+            alt = alturaPilha(backup->casa[l][c]);
+            while(alt > 0){
+                inserirPeca(&tab->casa[l][c]);
+                alt--;
+            }
+        }
+    }
+}
+
+//Função que restaura o backup da mão.
+void restaurarBackupMao(Pilha *mao, Pilha *backup){
+    if(backup == NULL)
+        return;
+
+    while(*mao != NULL)
+        removerPeca(mao);
+
+    Peca *aux = *backup;
+    while(aux != NULL){
+        inserirPeca(mao);
+        aux = aux->prox;
+    }
+}
+
+
+//Função responsavel por realizar a jogada.
+void fazerJogada(Tabuleiro *tab, Pilha *mao, int tam_tab, char *jogador_01, char *jogador_02, Pilha pontuacao_jog_branco, Pilha pontuacao_jog_preto){
+    if(mao == NULL || *mao == NULL)
+        return;
+
+    int l = 0, c = 0, linhaAnterior = -1, colunaAnterior = -1, jogada = 0;
+    int max = alturaPilha(*mao);
+    int histLinha[max], histColuna[max];
+
+    Tabuleiro *copiaTab = backupTabuleiro(tab);
+    Pilha *copiaMao = backupPilha(mao);
+
+    while(*mao != NULL){
+        printf("\nSua mão tem %d peças.\n", alturaPilha(*mao));
+
+        printf("Escolha uma posição para colocar uma peça de 1 a %d:\n", tab->col);
+        printf("Linha: ");
+        scanf("%d", &l);
+        printf("Coluna: ");
+        scanf("%d", &c);
+
+        //Verifica se a posição escolhida está dentro do tabuleiro.
+        if(l <= 0 || l > tab->lin || c <= 0 || c > tab->col){
+            printf("\nPosição inválida! Tente novamente.\n");
+            continue;
+        }
+
+        //Analisa se a jogada escolhida foi feita de forma ortogonal e ao lado da posição atual.
+        if(linhaAnterior != -1){
+            if(abs(l - linhaAnterior) + abs(c - colunaAnterior) != 1){
+                printf("\nAs jogadas devem ser feitas de forma ortogonal! Tente novamente.\n");
+                continue;
+            }
+        }
+
+        //Verifica se a posição escolhida já foi preenchida dentro da jogada.
+        int repetida = 0;
+        for(int i = 0; i < jogada; i++){
+            if(histLinha[i] == l && histColuna[i] == c){
+                repetida = 1;
+                break;
+            }
+        }
+        if(repetida){
+            printf("\nPosição já foi usada! Tente novamente.\n");
+            continue;
+        }
+
+        //Realiza a jogada.
+        if(moverPecas(mao, &tab->casa[l-1][c-1]) == 0)
+            printf("\nErro ao mover peças da mão para o tabuleiro durante a jogada.\n");
+
+
+        limpaTela();
+        exiberPontuacao(tam_tab, jogador_01, jogador_02, pontuacao_jog_branco, pontuacao_jog_preto);
+        imprimeTabuleiro(tab);
+
+        if(alturaPilha(*mao) == 0 || validarJogada(tab, histLinha, histColuna, l, c, jogada)){
+            linhaAnterior = l;
+            colunaAnterior = c;
+
+            histLinha[jogada] = l;
+            histColuna[jogada] = c;
+            jogada++;
+
+        }
+        else{
+            printf("\nSua mão tem %d peças.\n", alturaPilha(*mao));
+            printf("\nJogador impossibilitado de realizar novas jogadas.\n");
+            printf("O jogo será reiniciado para o início da rodada!\n");
+            while(getchar() != '\n');
+            pausa();
+
+            restaurarBackupTab(tab, copiaTab);
+            restaurarBackupMao(mao, copiaMao);
+
+            limpaTela();
+            exiberPontuacao(tam_tab, jogador_01, jogador_02, pontuacao_jog_branco, pontuacao_jog_preto);
+            imprimeTabuleiro(tab);
+
+            linhaAnterior = -1;
+            colunaAnterior = -1;
+            jogada = 0;
+            histLinha[jogada] = 0;
+            histColuna[jogada] = 0;
+
+            continue;
+
+        }
+    }
+    destruirTabuleiro(copiaTab);
+    destruirPilha(copiaMao);
+
+   printf("\nAltura da pilha backupa: %d\n", alturaPilha(copiaMao));
 }
 
 
@@ -337,6 +498,8 @@ void verificaPontuacao(Tabuleiro *tab, Pilha *pontuacao, char jogador){
     }
     printf("\nPontuação na rodadada: %d", parcial);
 }
+
+
 
 //Função que verifica as condições de parada do jogo.
 //Primeira condição: Linha escolhida está vazia.
@@ -445,9 +608,75 @@ void limpaTela(){
 
 void pausa(){
     printf("\n\nPrecione enter para continuar...");
-    while(getchar() != '\n');
     char prox;
     do{
        prox = getchar();
     }while(prox != '\n');
+}
+
+//Função que exibe menu de pontuação dos jogadores.
+void exiberPontuacao(int tam_tab, char *jogador_01, char *jogador_02, Pilha pontuacao_jog_branco, Pilha pontuacao_jog_preto){
+    printf("\n");
+    for(int i = 0; i < tam_tab * 7 + 7; i++)
+        printf("=");
+
+    printf("\nPontuação Total do jogador (Branco) %s: %d\n", jogador_01, alturaPilha(pontuacao_jog_branco));
+    printf("\nPontuação Total do jogador (Preto) %s: %d\n", jogador_02, alturaPilha(pontuacao_jog_preto));
+
+    for(int i = 0; i < tam_tab * 7 + 7; i++)
+    printf("=");
+
+    printf("\n");
+}
+
+
+//Função que exibe regras do jogo.
+void exibirRegras(){
+
+    printf("========================================================================================\n");
+    printf("                               REGRAS DO JOGO BUKU\n");
+    printf("========================================================================================\n");
+
+    printf("1. O jogo é disputado por dois jogadores:\n");
+    printf("   - Jogador Branco\n");
+    printf("   - Jogador Preto\n\n");
+
+    printf("2. O tabuleiro é composto por uma matriz de casas,\n");
+    printf("   onde cada casa contém uma pilha de peças.\n\n");
+
+    printf("3. Na sua vez, o jogador deve:\n");
+    printf("   - Escolher uma linha do tabuleiro (caso seja o jogador branco\n");
+    printf("     ou escolher uma coluna do tabuleiro (caso seja o jogador preto.\n");
+    printf("   - Todas as peças decorrentes da sua escolha serão coletadas para sua mão.\n\n");
+
+    printf("4. Após coletar as peças:\n");
+    printf("   - O jogador deve distribuí-las pelo tabuleiro\n");
+    printf("     seguindo as regras do jogo.\n\n");
+
+    printf("5. Regras para a jogada:\n");
+    printf("   - As peças devem ser distribuidas no tabuleiro de forma ortogonal a última jogada.\n");
+    printf("   - Não é permitido passar por uma casa já utilizada dentro da rodada.\n");
+    printf("   - Deve-se tomar cuidoda para não escolher posições fora do tabuleiro.\n\n");
+
+    printf("5. Durante a jogada:\n");
+    printf("   - O jogador pode continuar jogando dependendo\n");
+    printf("     da posição final\n");
+    printf("   - Ou pode ficar sem movimentos válidos\n\n");
+
+    printf("6. Caso a jogada seja inválida:\n");
+    printf("   - Toda a jogada deve ser desfeita\n");
+    printf("   - O tabuleiro volta ao início da jogada.\n\n");
+
+    printf("7. Quando o jogo termina?\n");
+    printf("   - Quando existir apenas um peça em cada casa no final de uma rodada.\n");
+    printf("     Nesse caso as peças serão distribuidas para os jogadores de acordo com a sua posição.\n");
+    printf("   - Quando o jogador branco escolher uma linha que esteja vazia.\n");
+    printf("   - Quando o jogador preto escolher uma coluna que esteja vazia.\n");
+    printf("     Para ambos os casos de escolha vazia as peças ques restarem no tabuleiro\n");
+    printf("     seguirão para a mão do oponente.\n\n");
+
+    printf("8. Vence o jogador que tiver a maior quantidade de peças.\n\n");
+
+    printf("========================================================================================\n");
+
 }

@@ -23,9 +23,14 @@ int main(){
     printf("1 - SIM\n");
     printf("2 - NÂO\n");
     scanf("%d", &resp);
-    if(resp == 1)
-        exibirRegras();
     printf("\n");
+    if(resp == 1){
+        exibirRegras();
+        printf("\n");
+        while(getchar() != '\n');
+        pausa();
+        limpaTela();
+    }
 
     //Criando o jogo.
     do{
@@ -42,6 +47,7 @@ int main(){
             printf(" Tabuleiro Criado com sucesso! ");
             for(int i = 0; i < tam_tab * 3.5 - 12; i++)
                 printf("=");
+            printf("\n");
 
             imprimeTabuleiro(tab);
             while(getchar() != '\n');
@@ -62,16 +68,6 @@ int main(){
     mao = criaPilha();
     pontuacao_jog_branco = criaPilha();
     pontuacao_jog_preto = criaPilha();
-
-
-    /*
-    No momento que se cria a pilha a mesma já inicia com um elemento.
-    Para resolver esse problema chama a função removerPeca uma vez antes de iniciar o jogo.
-    */
-    removerPeca(&mao); //O objetivo aqui é deixar a mão sem nenhuma peça.
-    removerPeca(&pontuacao_jog_branco); //O objetivo aqui é deixar a pontuação do jogador branco zerada.
-    removerPeca(&pontuacao_jog_preto); //O objetivo aqui é deixar a pontuação do jogador branco zerada.
-
 
     //Iniciando o jogo. Coletando dados dos jogadores.
     limpaTela();
@@ -98,22 +94,22 @@ int main(){
             printf("\nJogador (Branco) %s escolha uma linha: ", jogador_01);
             scanf("%d", &lin_jog);
 
-            if(condicaoParadaLinhaVazia(tab, lin_jog - 1, &pontuacao_jog_preto)) //Função que verifica se o jogador escolheu uma linha vazia.
+            if(condicaoParadaLinhaVazia(tab, lin_jog - 1, pontuacao_jog_preto)) //Função que verifica se o jogador escolheu uma linha vazia.
                 break;
 
-            coletarPecas(tab, lin_jog - 1, &mao, 'B'); //'B' é o sinal para a função que a jogada é do jogador branco.
+            coletarPecas(tab, lin_jog - 1, mao, 'B'); //'B' é o sinal para a função que a jogada é do jogador branco.
             limpaTela();
             exiberPontuacao(tam_tab, jogador_01, jogador_02, pontuacao_jog_branco, pontuacao_jog_preto);
             imprimeTabuleiro(tab);
 
-            fazerJogada(tab, &mao, tam_tab, jogador_01, jogador_02, pontuacao_jog_branco, pontuacao_jog_preto);
-            verificaPontuacao(tab, &pontuacao_jog_branco, 'B'); //'B' é o sinal para a função que a jogada é do jogador branco.
+            fazerJogada(tab, mao, tam_tab, jogador_01, jogador_02, pontuacao_jog_branco, pontuacao_jog_preto);
+            verificaPontuacao(tab, pontuacao_jog_branco, 'B'); //'B' é o sinal para a função que a jogada é do jogador branco.
             printf("\nPontuação Total do jogador (Branco) %s: %d\n", jogador_01, alturaPilha(pontuacao_jog_branco));
             while(getchar() != '\n');
             pausa();
 
-            if(jogada != 1)
-                if(condicaoParadaUnicaPeca(tab, &pontuacao_jog_branco, &pontuacao_jog_preto)) //Função que verifica se existem apeas uma peça em cada casa do tabuleiro (condição para finalizar o jogo).
+            if(jogada != 1) //Essa regra é dispensada para a primeira jogada.
+                if(condicaoParadaUnicaPeca(tab, pontuacao_jog_branco, pontuacao_jog_preto)) //Função que verifica se existem apeas uma peça em cada casa do tabuleiro (condição para finalizar o jogo).
                     break;
 
             jogada++;
@@ -127,23 +123,22 @@ int main(){
             printf("\nJogador (Preto) %s escolha uma coluna: ", jogador_02);
             scanf("%d", &col_jog);
 
-            if(condicaoParadaColunaVazia(tab, col_jog - 1, &pontuacao_jog_branco)) //Função que verifica se o jogador escolheu uma linha vazia.
+            if(condicaoParadaColunaVazia(tab, col_jog - 1, pontuacao_jog_branco)) //Função que verifica se o jogador escolheu uma linha vazia.
                 break;
 
-            coletarPecas(tab, col_jog - 1, &mao, 'P'); //'P' é o sinal para a função que a jogada é do jogador preto.
+            coletarPecas(tab, col_jog - 1, mao, 'P'); //'P' é o sinal para a função que a jogada é do jogador preto.
             limpaTela();
             exiberPontuacao(tam_tab, jogador_01, jogador_02, pontuacao_jog_branco, pontuacao_jog_preto);
             imprimeTabuleiro(tab);
 
-            fazerJogada(tab, &mao, tam_tab, jogador_01, jogador_02, pontuacao_jog_branco, pontuacao_jog_preto);
-            verificaPontuacao(tab, &pontuacao_jog_preto, 'P'); //'P' é o sinal para a função que a jogada é do jogador preto.
+            fazerJogada(tab, mao, tam_tab, jogador_01, jogador_02, pontuacao_jog_branco, pontuacao_jog_preto);
+            verificaPontuacao(tab, pontuacao_jog_preto, 'P'); //'P' é o sinal para a função que a jogada é do jogador preto.
             printf("\nPontuação Total do jogador (Preto) %s: %d\n", jogador_02, alturaPilha(pontuacao_jog_preto));
             while(getchar() != '\n');
             pausa();
 
-            if(jogada > 2)
-                if(condicaoParadaUnicaPeca(tab, &pontuacao_jog_branco, &pontuacao_jog_preto)) //Função que verifica se existem apeas uma peça em cada casa do tabuleiro (condição para finalizar o jogo).
-                    break;
+            if(condicaoParadaUnicaPeca(tab, pontuacao_jog_branco, pontuacao_jog_preto)) //Função que verifica se existem apeas uma peça em cada casa do tabuleiro (condição para finalizar o jogo).
+                break;
 
             jogada++;
 
@@ -166,12 +161,24 @@ int main(){
     printf("\nPontuação Total do jogador (Branco) %s: %d\n", jogador_01, pontJog01);
     printf("\nPontuação Total do jogador (Preto) %s: %d\n", jogador_02, pontJog02);
 
+    printf("\n");
+    for(int i = 0; i < tam_tab * 7 + 7; i++)
+        printf("=");
+    printf("\n");
+
+
     if(pontJog01 == pontJog02)
         printf("\nEmpate! Que tal outra partida de desempate?\n");
     else if(pontJog01 > pontJog02)
         printf("\nParabéns ao jogador %s por ter vencido o jogo!!!\n", jogador_01);
     else
         printf("\nParabéns ao jogador %s por ter vencido o jogo!!!\n", jogador_02);
+
+
+    printf("\n");
+    for(int i = 0; i < tam_tab * 7 + 7; i++)
+        printf("=");
+    printf("\n");
 
 
     //Liberando memória.

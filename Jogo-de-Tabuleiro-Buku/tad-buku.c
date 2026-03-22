@@ -48,14 +48,14 @@ void destruirPilha(Pilha *p){
 
 }
 
-//Função que faz uma copia de pilha.
+//Função que faz uma copia de uma pilha.
 Pilha* backupPilha(Pilha *p){
-    if(p == NULL || *p == NULL)
+    if(p == NULL)
         return NULL;
     Pilha *novaPilha = criaPilha();
     Peca *aux = *p;
     while(aux != NULL){
-        inserirPeca(novaPilha);
+        inserirPeca(&novaPilha);
         aux = aux->prox;
     }
     return novaPilha;
@@ -100,12 +100,12 @@ int moverPecas(Pilha *origem, Pilha *destino){
 }
 
 //Função que determina a altura de uma pilha (número de peças).
-int alturaPilha(Pilha p){
+int alturaPilha(Pilha *p){
     if(p == NULL)
         return 0;
     else {
         int cont = 0;
-        Peca *aux = p;
+        Peca *aux = *p;
         while(aux != NULL){
             cont++;
             aux = aux->prox;
@@ -190,8 +190,10 @@ void destruirTabuleiro(Tabuleiro *tab){
 
 //Função que imprime o tabuleiro.
 void imprimeTabuleiro(Tabuleiro *tab){
-    if(tab == NULL)
+    if(tab == NULL){
         printf("Tabuleiro não foi criado!");
+        return;
+    }
 
     else {
         printf("\n\t");
@@ -226,7 +228,7 @@ void imprimeTabuleiro(Tabuleiro *tab){
                 if(p == NULL)
                     printf("       ");
                 else{
-                    int altura = alturaPilha(p);
+                    int altura = alturaPilha(&p);
                     if(altura == 1)
                         printf("   @   ");
                     else if(altura == 2)
@@ -237,11 +239,13 @@ void imprimeTabuleiro(Tabuleiro *tab){
                     }
                 }
 
+
+
                 printf(RESET);
             }
             printf("\n");
 
-            //Imprime a parte de baixo das casa dando o efeito quadrado do tabuleiro.
+            //Imprime a parte de baixo das casas dando o efeito quadrado do tabuleiro.
             printf("       ");
             for(int c = 0; c < tab->col; c++){
                 if((l+c) % 2 == 0)
@@ -261,7 +265,11 @@ void imprimeTabuleiro(Tabuleiro *tab){
 
 //Função responsável por coletar as peças do jogador 01.
 void coletarPecas(Tabuleiro *tab, int jogada, Pilha *mao, char jogador){
-    if(jogada < 0 || jogada >= tab->lin || jogada >= tab->col){
+    if(tab == NULL || mao == NULL){
+        printf("\nErro: Ponteiro NULL em coletarPecas.\n");
+        return;
+    }
+    if(jogada < 0 || jogada >= tab->lin || jogada >= tab->col){ //Controla se a ecolha está dentro do tabuleiro.
         printf("\nJogada incorreta. Jogador perdeu a vez!\n");
         while(getchar() != '\n');
         pausa();
@@ -275,7 +283,7 @@ void coletarPecas(Tabuleiro *tab, int jogada, Pilha *mao, char jogador){
             }
         }
     }
-    else if(jogador == 'P'){
+    else if(jogador == 'P'){ //Faz a coleta das peças na vertical.
         for(int l = 0; l < tab->lin; l++){
             while(tab->casa[l][jogada] != NULL){
                 if(moverPecas(&tab->casa[l][jogada], mao) == 0)
@@ -296,15 +304,16 @@ int validarJogada(Tabuleiro *tab, int histLinha[], int histColuna[], int l, int 
     int opColuna[] = {0, 0, -1, 1};
     int novaLinha, novaColuna, jogadorPreso = 0;
 
+    //Verifica as possiveis jogadas para cada lado (esquerda, direita, abaixo e encima).
     for(int i = 0; i < 4; i++){
         novaLinha = l + opLinha[i];
         novaColuna = c + opColuna[i];
 
 
-        if(novaLinha > 0 && novaLinha <= tab->lin && novaColuna > 0 && novaColuna <= tab->col){
+        if(novaLinha > 0 && novaLinha <= tab->lin && novaColuna > 0 && novaColuna <= tab->col){ //Confere se a possivel jogada está dentro do tabuleiro.
             int repetida = 0;
             for(int j = 0; j < jogada; j++){
-                if(histLinha[j] == novaLinha && histColuna[j] == novaColuna){
+                if(histLinha[j] == novaLinha && histColuna[j] == novaColuna){ //Confere se a possivel jogada já foi realizada.
                     repetida = 1;
                     break;
                 }
@@ -317,7 +326,7 @@ int validarJogada(Tabuleiro *tab, int histLinha[], int histColuna[], int l, int 
             jogadorPreso++;
         }
     }
-    if(jogadorPreso == 4)
+    if(jogadorPreso == 4) //Se todas as possiveis jogadas não foram jogadas válidas, retorna 0, se existir pelo menos uma possivel jogada válida, retorna 1.
         return 0;
     else
         return 1;
@@ -334,7 +343,7 @@ void restaurarBackupTab(Tabuleiro *tab, Tabuleiro *backup){
                 removerPeca(&tab->casa[l][c]);
 
 
-            alt = alturaPilha(backup->casa[l][c]);
+            alt = alturaPilha(&backup->casa[l][c]);
             while(alt > 0){
                 inserirPeca(&tab->casa[l][c]);
                 alt--;
@@ -365,14 +374,16 @@ void fazerJogada(Tabuleiro *tab, Pilha *mao, int tam_tab, char *jogador_01, char
         return;
 
     int l = 0, c = 0, linhaAnterior = -1, colunaAnterior = -1, jogada = 0;
-    int max = alturaPilha(*mao);
-    int histLinha[max], histColuna[max];
+    int max = alturaPilha(mao);
+    if(max <= 0)
+        return;
+    int histLinha[max], histColuna[max]; //Vetores para mapear a jogada.
 
-    Tabuleiro *copiaTab = backupTabuleiro(tab);
-    Pilha *copiaMao = backupPilha(mao);
+    Tabuleiro *copiaTab = backupTabuleiro(tab); //Cria uma cópia do tabuleiro.
+    Pilha *copiaMao = backupPilha(mao);  //Cria uma cópia da mão do jogador.
 
     while(*mao != NULL){
-        printf("\nSua mão tem %d peças.\n", alturaPilha(*mao));
+        printf("\nSua mão tem %d peças.\n", alturaPilha(mao));
 
         printf("Escolha uma posição para colocar uma peça de 1 a %d:\n", tab->col);
         printf("Linha: ");
@@ -416,7 +427,8 @@ void fazerJogada(Tabuleiro *tab, Pilha *mao, int tam_tab, char *jogador_01, char
         exiberPontuacao(tam_tab, jogador_01, jogador_02, pontuacao_jog_branco, pontuacao_jog_preto);
         imprimeTabuleiro(tab);
 
-        if(alturaPilha(*mao) == 0 || validarJogada(tab, histLinha, histColuna, l, c, jogada)){
+        //Valida a jogada.
+        if(alturaPilha(mao) == 0 || validarJogada(tab, histLinha, histColuna, l, c, jogada)){ //Se for possível realizar outra jogada a função segue.
             linhaAnterior = l;
             colunaAnterior = c;
 
@@ -425,20 +437,21 @@ void fazerJogada(Tabuleiro *tab, Pilha *mao, int tam_tab, char *jogador_01, char
             jogada++;
 
         }
-        else{
-            printf("\nSua mão tem %d peças.\n", alturaPilha(*mao));
+        else{ //Caso não for possível realizar outra jogada (jogador preso), faz um rollback para o início da jogada..
+            printf("\nSua mão tem %d peças.\n", alturaPilha(mao));
             printf("\nJogador impossibilitado de realizar novas jogadas.\n");
             printf("O jogo será reiniciado para o início da rodada!\n");
             while(getchar() != '\n');
             pausa();
 
-            restaurarBackupTab(tab, copiaTab);
-            restaurarBackupMao(mao, copiaMao);
+            restaurarBackupTab(tab, copiaTab); //Restaura o tabuleiro para o início da rodada.
+            restaurarBackupMao(mao, copiaMao); //Restaura a mão do jogador para o início da rodada.
 
             limpaTela();
             exiberPontuacao(tam_tab, jogador_01, jogador_02, pontuacao_jog_branco, pontuacao_jog_preto);
             imprimeTabuleiro(tab);
 
+            //Restaura os dados para o início da jogada.
             linhaAnterior = -1;
             colunaAnterior = -1;
             jogada = 0;
@@ -449,10 +462,10 @@ void fazerJogada(Tabuleiro *tab, Pilha *mao, int tam_tab, char *jogador_01, char
 
         }
     }
+    //Se a jogada for realizada com sucesso, destroi o backup do tabuleiro e o beckup da mão do jogador, liberabdo a memória.
     destruirTabuleiro(copiaTab);
     destruirPilha(copiaMao);
 
-   printf("\nAltura da pilha backupa: %d\n", alturaPilha(copiaMao));
 }
 
 
@@ -462,10 +475,10 @@ void verificaPontuacao(Tabuleiro *tab, Pilha *pontuacao, char jogador){
     for(int l = 0; l < tab->lin; l++){
         for(int c = 0; c < tab->col; c++){
 
-            //Verifica a pontuação por 3 peças para o jogador branco.
+            //Verifica se houve pontuação por três peças na casa para o jogador branco.
             if(jogador == 'B'){
                 if((l+c) % 2 == 0){
-                    alt = alturaPilha(tab->casa[l][c]);
+                    alt = alturaPilha(&tab->casa[l][c]);
                     if(alt >= 3){
                         while(alt > 0){
                             if(moverPecas(&tab->casa[l][c], pontuacao) == 0)
@@ -476,10 +489,10 @@ void verificaPontuacao(Tabuleiro *tab, Pilha *pontuacao, char jogador){
                     }
                 }
             }
-            //Verifica a pontuação para três peças para o jogador preto.
+            //Verifica se houve pontuação para três peças na casa para o jogador preto.
             else if(jogador == 'P'){
                 if((l+c) % 2 != 0){
-                    alt = alturaPilha(tab->casa[l][c]);
+                    alt = alturaPilha(&tab->casa[l][c]);
                     if(alt >= 3){
                         while(alt > 0){
                             if(moverPecas(&tab->casa[l][c], pontuacao) == 0)
@@ -501,23 +514,23 @@ void verificaPontuacao(Tabuleiro *tab, Pilha *pontuacao, char jogador){
 
 
 
-//Função que verifica as condições de parada do jogo.
+//Funções que verificam as condições de parada do jogo.
 //Primeira condição: Linha escolhida está vazia.
 int condicaoParadaLinhaVazia(Tabuleiro *tab, int escolha, Pilha *pontuacao){
     if(escolha < 0 || escolha >= tab->lin)
         return 0;
 
     int cond = 0, alt = 0;
-    for(int c = 0; c < tab->col; c++){
-        if(alturaPilha(tab->casa[escolha][c]) != 0){
+    for(int c = 0; c < tab->col; c++){ //Verifica se a linha escolhida está vazia.
+        if(alturaPilha(&tab->casa[escolha][c]) != 0){
             cond = 1;
             break;
         }
     }
-    if(cond == 0){
+    if(cond == 0){ //Se a linha escolhida estiver vazia, move todas as peças do tabuleiro para a pilha de pontuação do oponente.
         for(int l = 0; l < tab->lin; l++){
             for(int c = 0; c < tab->col; c++){
-                alt = alturaPilha(tab->casa[l][c]);
+                alt = alturaPilha(&tab->casa[l][c]);
                 while(alt != 0){
                     if(moverPecas(&tab->casa[l][c], pontuacao) == 0)
                         printf("\nErro ao mover peças do tabuleiro para a pontuação do jogador na função condicaoParadaPorLinhaVazia.\n");
@@ -525,10 +538,10 @@ int condicaoParadaLinhaVazia(Tabuleiro *tab, int escolha, Pilha *pontuacao){
                 }
             }
         }
-        return 1;
+        return 1; //Se a condição de parada for confirmada retorna indicando que o jogo deve ser encerrado.
     }
     else
-        return 0;
+        return 0; //Retorna se o jogo não satisfazer a condição de parada.
 }
 
 //Segunda condição: Coluna escolhida está vazia.
@@ -537,16 +550,16 @@ int condicaoParadaColunaVazia(Tabuleiro *tab, int escolha, Pilha *pontuacao){
         return 0;
 
     int cond = 0, alt = 0;
-    for(int l = 0; l < tab->lin; l++){
-        if(alturaPilha(tab->casa[l][escolha]) != 0){
+    for(int l = 0; l < tab->lin; l++){ //Verifica se a coluna escolhida está vazia.
+        if(alturaPilha(&tab->casa[l][escolha]) != 0){
             cond = 1;
             break;
         }
     }
-    if(cond == 0){
+    if(cond == 0){ //Se a coluna escolhida estiver vazia, move todas as peças do tabuleiro para a pilha de pontuação do oponente.
         for(int l = 0; l < tab->lin; l++){
             for(int c = 0; c < tab->col; c++){
-                alt = alturaPilha(tab->casa[l][c]);
+                alt = alturaPilha(&tab->casa[l][c]);
                 while(alt != 0){
                     if(moverPecas(&tab->casa[l][c], pontuacao) == 0)
                         printf("\nErro ao mover peças do tabuleiro para a pontuação do jogador na função condicaoParadaPorLinhaVazia.\n");
@@ -554,25 +567,27 @@ int condicaoParadaColunaVazia(Tabuleiro *tab, int escolha, Pilha *pontuacao){
                 }
             }
         }
-        return 1;
+        return 1; //Se a condição de parada for confirmada retorna indicando que o jogo deve ser encerrado.
     }
     else
-        return 0;
+        return 0; //Retorna se o jogo não satisfazer a condição de parada.
 }
 
 //Terceira condição: Só existe uma peça em cada casa do tabuleiro.
 int condicaoParadaUnicaPeca(Tabuleiro *tab, Pilha *pontuacaoBranco, Pilha *pontuacaoPreto){
-    int cond = 0;
-    for(int l = 0; l < tab->lin; l++){
+    if(tab == NULL)
+        return 0;
+
+    for(int l = 0; l < tab->lin; l++){ //Verifica se todas as casas possuem apenas uma peça.
         for(int c = 0; c < tab->col;c++){
-            if(alturaPilha(tab->casa[l][c]) > 1)
+            if(alturaPilha(&tab->casa[l][c]) > 1) //Se essa condição não for confirmada, significa que existe apenas uma peça nas casas do tabuleiro.
                 return 0;
         }
     }
     int alt;
-    for(int l = 0; l < tab->lin; l++){
+    for(int l = 0; l < tab->lin; l++){ //Move as peças existentes de acordo com a cor da casa para a pilha de pontuação do respetivo jogador.
         for(int c = 0; c < tab->col;c++){
-            alt = alturaPilha(tab->casa[l][c]);
+            alt = alturaPilha(&tab->casa[l][c]);
             if((l+c) % 2 == 0){
                 while(alt > 0){
                     if(moverPecas(&tab->casa[l][c], pontuacaoBranco) == 0)
@@ -606,8 +621,9 @@ void limpaTela(){
     printf("\033[2J\033[H");
 }
 
+//Função que pausa o jogo até ser apertada a tecla enter do teclado.
 void pausa(){
-    printf("\n\nPrecione enter para continuar...");
+    printf("\nPrecione enter para continuar...");
     char prox;
     do{
        prox = getchar();
@@ -620,8 +636,8 @@ void exiberPontuacao(int tam_tab, char *jogador_01, char *jogador_02, Pilha pont
     for(int i = 0; i < tam_tab * 7 + 7; i++)
         printf("=");
 
-    printf("\nPontuação Total do jogador (Branco) %s: %d\n", jogador_01, alturaPilha(pontuacao_jog_branco));
-    printf("\nPontuação Total do jogador (Preto) %s: %d\n", jogador_02, alturaPilha(pontuacao_jog_preto));
+    printf("\nPontuação do jogador (Branco) %s: %d\n", jogador_01, alturaPilha(pontuacao_jog_branco));
+    printf("\nPontuação do jogador (Preto) %s: %d\n", jogador_02, alturaPilha(pontuacao_jog_preto));
 
     for(int i = 0; i < tam_tab * 7 + 7; i++)
     printf("=");
@@ -670,6 +686,7 @@ void exibirRegras(){
     printf("7. Quando o jogo termina?\n");
     printf("   - Quando existir apenas um peça em cada casa no final de uma rodada.\n");
     printf("     Nesse caso as peças serão distribuidas para os jogadores de acordo com a sua posição.\n");
+    printf("     Essa regra fica desativada durante as duas primeiras rodadas em que o tabuleiro permanece inalterado.\n");
     printf("   - Quando o jogador branco escolher uma linha que esteja vazia.\n");
     printf("   - Quando o jogador preto escolher uma coluna que esteja vazia.\n");
     printf("     Para ambos os casos de escolha vazia as peças ques restarem no tabuleiro\n");

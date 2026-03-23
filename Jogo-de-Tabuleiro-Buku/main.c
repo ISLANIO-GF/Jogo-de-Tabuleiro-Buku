@@ -19,18 +19,24 @@ int main(){
     //Mostrando regras.
     menu();
     int resp;
-    printf("\nMostrar regras do jogo:\n");
-    printf("1 - SIM\n");
-    printf("2 - NÂO\n");
-    scanf("%d", &resp);
-    printf("\n");
-    if(resp == 1){
-        exibirRegras();
+    do{
+        printf("\nMostrar regras do jogo:\n");
+        printf("1 - SIM\n");
+        printf("2 - NÂO\n");
+        scanf("%d", &resp);
         printf("\n");
-        while(getchar() != '\n');
-        pausa();
-        limpaTela();
-    }
+        if(resp == 1){
+            exibirRegras();
+            printf("\n");
+            while(getchar() != '\n');
+            pausa();
+            limpaTela();
+        }
+        if(resp != 1 && resp != 2)
+            printf("Resposta inválida!\n");
+
+    }while(resp != 1 && resp != 2);
+
 
     //Criando o jogo.
     do{
@@ -105,7 +111,9 @@ int main(){
             fazerJogada(tab, mao, tam_tab, jogador_01, jogador_02, pontuacao_jog_branco, pontuacao_jog_preto);
             verificaPontuacao(tab, pontuacao_jog_branco, 'B'); //'B' é o sinal para a função que a jogada é do jogador branco.
             printf("\nPontuação Total do jogador (Branco) %s: %d\n", jogador_01, alturaPilha(pontuacao_jog_branco));
-            while(getchar() != '\n');
+
+            if(lin_jog > 0 && lin_jog <= tam_tab) //Corrige o bugg quando a escolha da linha é inválida.
+                while(getchar() != '\n');
             pausa();
 
             if(jogada != 1) //Essa regra é dispensada para a primeira jogada.
@@ -134,7 +142,9 @@ int main(){
             fazerJogada(tab, mao, tam_tab, jogador_01, jogador_02, pontuacao_jog_branco, pontuacao_jog_preto);
             verificaPontuacao(tab, pontuacao_jog_preto, 'P'); //'P' é o sinal para a função que a jogada é do jogador preto.
             printf("\nPontuação Total do jogador (Preto) %s: %d\n", jogador_02, alturaPilha(pontuacao_jog_preto));
-            while(getchar() != '\n');
+
+            if(col_jog > 0 && col_jog <= tam_tab) //Corrige o bugg quando a escolha da coluna é inválida.
+                while(getchar() != '\n');
             pausa();
 
             if(condicaoParadaUnicaPeca(tab, pontuacao_jog_branco, pontuacao_jog_preto)) //Função que verifica se existem apeas uma peça em cada casa do tabuleiro (condição para finalizar o jogo).
@@ -148,10 +158,10 @@ int main(){
 
     //Resultado da partida.
     printf("\n");
-    for(int i = 0; i < tam_tab * 3.5 - 6; i++)
+    for(int i = 0; i < tam_tab * 3.5 - 5; i++)
         printf("=");
-    printf(" JOGO FINALIZADO!!! ");
-    for(int i = 0; i < tam_tab * 3.5 - 6; i++)
+    printf(" JOGO FINALIZADO ");
+    for(int i = 0; i < tam_tab * 3.5 - 5; i++)
         printf("=");
     printf("\n");
 
@@ -162,7 +172,10 @@ int main(){
     printf("\nPontuação Total do jogador (Preto) %s: %d\n", jogador_02, pontJog02);
 
     printf("\n");
-    for(int i = 0; i < tam_tab * 7 + 7; i++)
+    for(int i = 0; i < tam_tab * 3.5 - 2; i++)
+        printf("=");
+    printf(" RESULTADO ");
+    for(int i = 0; i < tam_tab * 3.5 - 2; i++)
         printf("=");
     printf("\n");
 

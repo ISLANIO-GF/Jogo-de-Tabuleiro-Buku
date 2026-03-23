@@ -239,8 +239,6 @@ void imprimeTabuleiro(Tabuleiro *tab){
                     }
                 }
 
-
-
                 printf(RESET);
             }
             printf("\n");
@@ -373,17 +371,20 @@ void fazerJogada(Tabuleiro *tab, Pilha *mao, int tam_tab, char *jogador_01, char
     if(mao == NULL || *mao == NULL)
         return;
 
-    int l = 0, c = 0, linhaAnterior = -1, colunaAnterior = -1, jogada = 0;
+    int l = 0, c = 0, linhaAnterior = -1, colunaAnterior = -1, jogada = 0, ultJogada = 0;
     int max = alturaPilha(mao);
     if(max <= 0)
         return;
-    int histLinha[max], histColuna[max]; //Vetores para mapear a jogada.
+    int histLinha[max], histColuna[max]; //Histórico das jogadas.
 
     Tabuleiro *copiaTab = backupTabuleiro(tab); //Cria uma cópia do tabuleiro.
     Pilha *copiaMao = backupPilha(mao);  //Cria uma cópia da mão do jogador.
 
     while(*mao != NULL){
         printf("\nSua mão tem %d peças.\n", alturaPilha(mao));
+
+        if(jogada > 0)
+            printf("Ultima jogada válida: [%d, %d]\n", histLinha[jogada - 1], histColuna[jogada - 1]);
 
         printf("Escolha uma posição para colocar uma peça de 1 a %d:\n", tab->col);
         printf("Linha: ");
@@ -650,15 +651,14 @@ void exiberPontuacao(int tam_tab, char *jogador_01, char *jogador_02, Pilha pont
 void exibirRegras(){
 
     printf("========================================================================================\n");
-    printf("                               REGRAS DO JOGO BUKU\n");
+    printf("                                 REGRAS DO JOGO\n");
     printf("========================================================================================\n");
 
     printf("1. O jogo é disputado por dois jogadores:\n");
     printf("   - Jogador Branco\n");
     printf("   - Jogador Preto\n\n");
 
-    printf("2. O tabuleiro é composto por uma matriz de casas,\n");
-    printf("   onde cada casa contém uma pilha de peças.\n\n");
+    printf("2. O tabuleiro é composto por uma matriz de casas onde cada casa contém uma pilha de peças.\n\n");
 
     printf("3. Na sua vez, o jogador deve:\n");
     printf("   - Escolher uma linha do tabuleiro (caso seja o jogador branco\n");
@@ -666,8 +666,7 @@ void exibirRegras(){
     printf("   - Todas as peças decorrentes da sua escolha serão coletadas para sua mão.\n\n");
 
     printf("4. Após coletar as peças:\n");
-    printf("   - O jogador deve distribuí-las pelo tabuleiro\n");
-    printf("     seguindo as regras do jogo.\n\n");
+    printf("   - O jogador deve distribuí-las pelo tabuleiro seguindo as regras do jogo.\n\n");
 
     printf("5. Regras para a jogada:\n");
     printf("   - As peças devem ser distribuidas no tabuleiro de forma ortogonal a última jogada.\n");
@@ -675,8 +674,7 @@ void exibirRegras(){
     printf("   - Deve-se tomar cuidoda para não escolher posições fora do tabuleiro.\n\n");
 
     printf("5. Durante a jogada:\n");
-    printf("   - O jogador pode continuar jogando dependendo\n");
-    printf("     da posição final\n");
+    printf("   - O jogador pode continuar jogando dependendo da posição final\n");
     printf("   - Ou pode ficar sem movimentos válidos\n\n");
 
     printf("6. Caso a jogada seja inválida:\n");
@@ -686,11 +684,11 @@ void exibirRegras(){
     printf("7. Quando o jogo termina?\n");
     printf("   - Quando existir apenas um peça em cada casa no final de uma rodada.\n");
     printf("     Nesse caso as peças serão distribuidas para os jogadores de acordo com a sua posição.\n");
-    printf("     Essa regra fica desativada durante as duas primeiras rodadas em que o tabuleiro permanece inalterado.\n");
+    printf("     Exceto na primeiras rodada em que o tabuleiro permanece inalterado.\n");
     printf("   - Quando o jogador branco escolher uma linha que esteja vazia.\n");
     printf("   - Quando o jogador preto escolher uma coluna que esteja vazia.\n");
-    printf("     Para ambos os casos de escolha vazia as peças ques restarem no tabuleiro\n");
-    printf("     seguirão para a mão do oponente.\n\n");
+    printf("     Para ambos os casos de escolha vazia as peças ques restarem no tabuleiro seguirão\n");
+    printf("     para a mão do oponente.\n\n");
 
     printf("8. Vence o jogador que tiver a maior quantidade de peças.\n\n");
 

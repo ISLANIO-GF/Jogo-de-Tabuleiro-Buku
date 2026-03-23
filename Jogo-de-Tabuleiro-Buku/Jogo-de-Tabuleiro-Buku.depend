@@ -1,14 +1,14 @@
 # depslib dependency file v1.0
-1774227910 source:c:\users\islan\onedrive\educa«√o\ufca\faculdade\5∫ semestre\laed\projeto-islanio-feitosa-jogo-de-tabuleiro-buku\jogo-de-tabuleiro-buku\main.c
+1774232072 source:c:\users\islan\onedrive\educa«√o\ufca\faculdade\5∫ semestre\laed\projeto-islanio-feitosa-jogo-de-tabuleiro-buku\jogo-de-tabuleiro-buku\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	<locale.h>
 	"tad-buku.h"
 
-1774198547 c:\users\islan\onedrive\educa«√o\ufca\faculdade\5∫ semestre\laed\projeto-islanio-feitosa-jogo-de-tabuleiro-buku\jogo-de-tabuleiro-buku\tad-buku.h
+1774231745 c:\users\islan\onedrive\educa«√o\ufca\faculdade\5∫ semestre\laed\projeto-islanio-feitosa-jogo-de-tabuleiro-buku\jogo-de-tabuleiro-buku\tad-buku.h
 
-1774224888 source:c:\users\islan\onedrive\educa«√o\ufca\faculdade\5∫ semestre\laed\projeto-islanio-feitosa-jogo-de-tabuleiro-buku\jogo-de-tabuleiro-buku\tad-buku.c
+1774231745 source:c:\users\islan\onedrive\educa«√o\ufca\faculdade\5∫ semestre\laed\projeto-islanio-feitosa-jogo-de-tabuleiro-buku\jogo-de-tabuleiro-buku\tad-buku.c
 	<stdio.h>
 	<stdlib.h>
 	"tad-buku.h"

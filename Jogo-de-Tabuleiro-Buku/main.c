@@ -112,7 +112,7 @@ int main(){
             verificaPontuacao(tab, pontuacao_jog_branco, 'B'); //'B' é o sinal para a função que a jogada é do jogador branco.
             printf("\nPontuação Total do jogador (Branco) %s: %d\n", jogador_01, alturaPilha(pontuacao_jog_branco));
 
-            if(lin_jog > 0 && lin_jog <= tam_tab) //Corrige o bugg quando a escolha da linha é inválida.
+            if(lin_jog > 0 && lin_jog <= tam_tab) //Corrige o bug quando a escolha da linha é inválida.
                 while(getchar() != '\n');
             pausa();
 
@@ -143,7 +143,7 @@ int main(){
             verificaPontuacao(tab, pontuacao_jog_preto, 'P'); //'P' é o sinal para a função que a jogada é do jogador preto.
             printf("\nPontuação Total do jogador (Preto) %s: %d\n", jogador_02, alturaPilha(pontuacao_jog_preto));
 
-            if(col_jog > 0 && col_jog <= tam_tab) //Corrige o bugg quando a escolha da coluna é inválida.
+            if(col_jog > 0 && col_jog <= tam_tab) //Corrige o bug quando a escolha da coluna é inválida.
                 while(getchar() != '\n');
             pausa();
 

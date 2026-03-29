@@ -117,18 +117,18 @@ int alturaPilha(Pilha *p){
 
 
 //Função que cria o tabuleiro.
-Tabuleiro* criaTabuleiro(int tam){
+Tabuleiro* criaTabuleiro(int tamanhoTabuleiro){
     Tabuleiro* tab = (Tabuleiro*)malloc(sizeof(Tabuleiro));
     if (tab == NULL){
         printf("\nErro ao criar o tabuleiro!\n");
         exit(1);
     }
-    tab->lin = tam;
-    tab->col = tam;
-    tab->casa = (Pilha**)malloc(tam * sizeof(Pilha*));
-    for (int i = 0; i < tam; i++){
-        tab->casa[i] = (Pilha*)malloc(tam * sizeof(Pilha));
-        for(int j = 0; j < tam; j++){
+    tab->lin = tamanhoTabuleiro;
+    tab->col = tamanhoTabuleiro;
+    tab->casa = (Pilha**)malloc(tamanhoTabuleiro * sizeof(Pilha*));
+    for (int i = 0; i < tamanhoTabuleiro; i++){
+        tab->casa[i] = (Pilha*)malloc(tamanhoTabuleiro * sizeof(Pilha));
+        for(int j = 0; j < tamanhoTabuleiro; j++){
             tab->casa[i][j] = NULL;
         }
     }
@@ -206,10 +206,12 @@ void imprimeTabuleiro(Tabuleiro *tab){
         for(int l = 0; l < tab->lin; l++){
             printf("       ");
             for(int c = 0; c < tab->col; c++){
+
                 if((l+c) % 2 == 0)
                     printf(FUNDO_XADREZ);
                 else
                     printf(FUNDO_MARROM);
+
                 printf("       ");
             }
             printf(RESET);
@@ -218,6 +220,7 @@ void imprimeTabuleiro(Tabuleiro *tab){
            //Imprime a as peças dentro de cada casa.
             printf(" L%02d - ", l + 1); //Imprime o cabeçalho das linhas.
             for(int c = 0; c < tab->col; c++){
+
                 Pilha p = tab->casa[l][c];
 
                 if((l+c) % 2 == 0)
@@ -425,7 +428,7 @@ void fazerJogada(Tabuleiro *tab, Pilha *mao, int tam_tab, char *jogador_01, char
 
 
         limpaTela();
-        exiberPontuacao(tam_tab, jogador_01, jogador_02, pontuacao_jog_branco, pontuacao_jog_preto);
+        exibirPontuacao(tam_tab, jogador_01, jogador_02, pontuacao_jog_branco, pontuacao_jog_preto);
         imprimeTabuleiro(tab);
 
         //Valida a jogada.
@@ -449,7 +452,7 @@ void fazerJogada(Tabuleiro *tab, Pilha *mao, int tam_tab, char *jogador_01, char
             restaurarBackupMao(mao, copiaMao); //Restaura a mão do jogador para o início da rodada.
 
             limpaTela();
-            exiberPontuacao(tam_tab, jogador_01, jogador_02, pontuacao_jog_branco, pontuacao_jog_preto);
+            exibirPontuacao(tam_tab, jogador_01, jogador_02, pontuacao_jog_branco, pontuacao_jog_preto);
             imprimeTabuleiro(tab);
 
             //Restaura os dados para o início da jogada.
@@ -518,7 +521,7 @@ void verificaPontuacao(Tabuleiro *tab, Pilha *pontuacao, char jogador){
 //Funções que verificam as condições de parada do jogo.
 //Primeira condição: Linha escolhida está vazia.
 int condicaoParadaLinhaVazia(Tabuleiro *tab, int escolha, Pilha *pontuacao){
-    if(escolha < 0 || escolha >= tab->lin)
+    if(escolha < 0 || escolha >= tab->lin) //Escolha de linha fora do tabuleiro.
         return 0;
 
     int cond = 0, alt = 0;
@@ -581,7 +584,7 @@ int condicaoParadaUnicaPeca(Tabuleiro *tab, Pilha *pontuacaoBranco, Pilha *pontu
 
     for(int l = 0; l < tab->lin; l++){ //Verifica se todas as casas possuem apenas uma peça.
         for(int c = 0; c < tab->col;c++){
-            if(alturaPilha(&tab->casa[l][c]) > 1) //Se essa condição não for confirmada, significa que existe apenas uma peça nas casas do tabuleiro.
+            if(alturaPilha(&tab->casa[l][c]) > 1) //Se essa condição não for confirmada, significa que existe apenas uma peça em cada casa do tabuleiro.
                 return 0;
         }
     }
@@ -632,15 +635,15 @@ void pausa(){
 }
 
 //Função que exibe menu de pontuação dos jogadores.
-void exiberPontuacao(int tam_tab, char *jogador_01, char *jogador_02, Pilha pontuacao_jog_branco, Pilha pontuacao_jog_preto){
+void exibirPontuacao(int tamanhoTabuleiro, char *jogadorBranco, char *jogadorPreto, Pilha pontuacaoJogadorBranco, Pilha pontuacaoJogadorPreto){
     printf("\n");
-    for(int i = 0; i < tam_tab * 7 + 7; i++)
+    for(int i = 0; i < tamanhoTabuleiro * 7 + 7; i++)
         printf("=");
 
-    printf("\nPontuação do jogador (Branco) %s: %d\n", jogador_01, alturaPilha(pontuacao_jog_branco));
-    printf("\nPontuação do jogador (Preto) %s: %d\n", jogador_02, alturaPilha(pontuacao_jog_preto));
+    printf("\nPontuação do jogador (Branco) %s: %d\n", jogadorBranco, alturaPilha(pontuacaoJogadorBranco));
+    printf("\nPontuação do jogador (Preto) %s: %d\n", jogadorPreto, alturaPilha(pontuacaoJogadorPreto));
 
-    for(int i = 0; i < tam_tab * 7 + 7; i++)
+    for(int i = 0; i < tamanhoTabuleiro * 7 + 7; i++)
     printf("=");
 
     printf("\n");

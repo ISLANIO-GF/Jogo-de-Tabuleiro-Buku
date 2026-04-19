@@ -17,7 +17,7 @@ void destruirTabuleiro(Tabuleiro *tab);
 //Função que imprime o tabuleiro.
 void imprimeTabuleiro(Tabuleiro *tab);
 
-//Função para criar pilha.
+//Função para criar uma pilha.
 Pilha* criaPilha();
 
 //Função para destruir uma pilha.
@@ -52,7 +52,7 @@ void exiberPontuacao(int tam_tab, char *jogador_01, char *jogador_02, Pilha pont
 //Função que exibe o menu do jogo.
 void menu();
 
-//Função que limpa a tela durante em certas ocasiões do jogo.
+//Função que limpa a tela em certas ocasiões do jogo.
 void limpaTela();
 
 //Função pausa.

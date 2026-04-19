@@ -70,7 +70,7 @@ int main(){
 
     }while(tamanhoTabuleiro % 2 != 0 || tamanhoTabuleiro < 3);
 
-    //criando pilha para mão do jogador e pontuação.
+    //criando pilhas para mão do jogador e pontuação.
     mao = criaPilha();
     pontuacaoJogadorBranco = criaPilha();
     pontuacaoJogadorPreto = criaPilha();
@@ -88,7 +88,7 @@ int main(){
     fgets(jogadorPreto, 50, stdin);
     jogadorPreto[strcspn(jogadorPreto, "\n")] = '\0';
 
-    //Começando a partida.
+    //Iniciando a partida.
     printf("\n===== Iniciando o Jogo. Boa sorte aos jogadores! =====\n");
     pausa();
     do{
@@ -116,7 +116,7 @@ int main(){
                 while(getchar() != '\n');
             pausa();
 
-            if(jogada != 1) //Essa regra é dispensada para a primeira jogada.
+            if(jogada != 1) //Essa regra é dispensada para a primeira rodada.
                 if(condicaoParadaUnicaPeca(tab, pontuacaoJogadorBranco, pontuacaoJogadorPreto)) //Função que verifica se existem apeas uma peça em cada casa do tabuleiro (condição para finalizar o jogo).
                     break;
 
@@ -156,7 +156,7 @@ int main(){
     } while(linhaJogada != -1 && colunaJogada != -1);
 
 
-    //Resultado da partida.
+    //Resultados da partida.
     printf("\n");
     for(int i = 0; i < tamanhoTabuleiro * 3.5 - 5; i++)
         printf("=");
